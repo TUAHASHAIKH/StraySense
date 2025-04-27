@@ -1,0 +1,8 @@
+# dependencies
+/node_modules/
+
+# optional: lock file
+/package-lock.json
+
+# env files (if you use them)
+/.env
