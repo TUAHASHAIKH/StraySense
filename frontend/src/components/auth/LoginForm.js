@@ -1,7 +1,6 @@
 // src/components/auth/LoginForm.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Logo from '../common/Logo';
 import '../../styles/auth.css';
 
 const LoginForm = () => {
@@ -24,84 +23,71 @@ const LoginForm = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    
     try {
-      // Here you would typically call your backend API
-      // For now, we'll just simulate a successful login
-      console.log('Login attempt with:', formData);
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Store token in localStorage (you'll get this from your API)
-      localStorage.setItem('token', 'sample-token');
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Login failed');
+      localStorage.setItem('token', data.token);
       navigate('/dashboard');
     } catch (err) {
-      setError('Invalid email or password. Please try again.');
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-form-container">
-      <div className="auth-logo-container">
-        <Logo width={60} height={60} />
-        <h1 className="auth-title">Stray Sense</h1>
+    <div className="auth-outer-container">
+      <div className="auth-left-panel">
+        <img src="/logo.png" alt="StraySense Logo" className="auth-brand-logo" />
+        <div className="auth-tagline">
+          <h2>Capturing Moments,<br/>Creating Memories</h2>
+        </div>
       </div>
-      
-      <div className="auth-form-box">
-        <h2>Welcome Back</h2>
-        <p className="auth-subtitle">Login to continue helping stray animals</p>
-        
-        {error && <div className="auth-error">{error}</div>}
-        
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Enter your email"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Enter your password"
-            />
-          </div>
-          
-          <div className="form-action">
-            <button 
-              type="submit" 
-              className="auth-button" 
-              disabled={loading}
-            >
-              {loading ? 'Logging in...' : 'Login'}
-            </button>
-          </div>
-          
-          <div className="auth-links">
-            <p>
-              Don't have an account? <Link to="/signup">Sign up</Link>
-            </p>
-            <Link to="/forgot-password" className="forgot-password">
-              Forgot password?
-            </Link>
-          </div>
-        </form>
+      <div className="auth-right-panel">
+        <div className="auth-form-box auth-animate-in">
+          <h2>Login</h2>
+          <p className="auth-subtitle">Don't have an account? <Link to="/signup">Sign up</Link></p>
+          {error && <div className="auth-error">{error}</div>}
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="form-group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="Email"
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                placeholder="Enter your password"
+              />
+            </div>
+            <div className="form-action">
+              <button type="submit" className="auth-button" disabled={loading}>
+                {loading ? 'Logging in...' : 'Login'}
+              </button>
+            </div>
+            <div className="auth-links">
+              <Link to="/forgot-password" className="forgot-password">
+                Forgot password?
+              </Link>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

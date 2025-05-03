@@ -1,7 +1,6 @@
 // src/components/auth/SignupForm.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Logo from '../common/Logo';
 import '../../styles/auth.css';
 
 const SignupForm = () => {
@@ -17,7 +16,7 @@ const SignupForm = () => {
     addressLine2: '',
     city: '',
     country: '',
-    role: 'adopter' // Default role
+    role: 'adopter'
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -57,204 +56,154 @@ const SignupForm = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    
     try {
-      // Here you would typically call your backend API
-      console.log('Signup attempt with:', formData);
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Redirect to login after successful signup
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          addressLine1: formData.addressLine1,
+          addressLine2: formData.addressLine2,
+          city: formData.city,
+          country: formData.country,
+          role: formData.role
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Signup failed');
       navigate('/login', { state: { message: 'Account created successfully! Please login.' } });
     } catch (err) {
-      setError('Could not create account. Please try again.');
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-form-container">
-      <div className="auth-logo-container">
-        <Logo width={60} height={60} />
-        <h1 className="auth-title">Stray Sense</h1>
+    <div className="auth-outer-container">
+      <div className="auth-left-panel">
+        <img src="/logo.png" alt="StraySense Logo" className="auth-brand-logo" />
+        <div className="auth-tagline">
+          <h2>Capturing Moments,<br/>Creating Memories</h2>
+        </div>
       </div>
-      
-      <div className="auth-form-box">
-        <h2>Create Account</h2>
-        <p className="auth-subtitle">Join us in helping stray animals find homes</p>
-        
-        {error && <div className="auth-error">{error}</div>}
-        
-        <form onSubmit={handleSubmit} className="auth-form">
-          {step === 1 ? (
-            <>
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter your email"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  placeholder="Create a password"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="confirmPassword">Confirm Password</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                  placeholder="Confirm your password"
-                />
-              </div>
-              
-              <div className="form-action">
-                <button 
-                  type="button" 
-                  className="auth-button" 
-                  onClick={handleNextStep}
-                >
-                  Next
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="form-group">
-                <label htmlFor="firstName">First Name</label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter your first name"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="lastName">Last Name</label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter your last name"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="phone">Phone (Optional)</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your phone number"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="addressLine1">Address Line 1 (Optional)</label>
-                <input
-                  type="text"
-                  id="addressLine1"
-                  name="addressLine1"
-                  value={formData.addressLine1}
-                  onChange={handleChange}
-                  placeholder="Enter your address"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="city">City (Optional)</label>
-                <input
-                  type="text"
-                  id="city"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  placeholder="Enter your city"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="country">Country (Optional)</label>
-                <input
-                  type="text"
-                  id="country"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  placeholder="Enter your country"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="role">I want to:</label>
-                <select
-                  id="role"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="adopter">Adopt an animal</option>
-                  <option value="volunteer">Volunteer</option>
-                  <option value="shelter_manager">Manage a shelter</option>
-                </select>
-              </div>
-              
-              <div className="form-action">
-                <button 
-                  type="button" 
-                  className="auth-button-secondary" 
-                  onClick={handlePrevStep}
-                >
-                  Back
-                </button>
-                <button 
-                  type="submit" 
-                  className="auth-button" 
-                  disabled={loading}
-                >
-                  {loading ? 'Creating Account...' : 'Sign Up'}
-                </button>
-              </div>
-            </>
-          )}
-          
-          <div className="auth-links">
-            <p>
-              Already have an account? <Link to="/login">Login</Link>
-            </p>
-          </div>
-        </form>
+      <div className="auth-right-panel">
+        <div className="auth-form-box auth-animate-in">
+          <h2>Create an account</h2>
+          <p className="auth-subtitle">Already have an account? <Link to="/login">Log in</Link></p>
+          {error && <div className="auth-error">{error}</div>}
+          <form onSubmit={handleSubmit} className="auth-form">
+            {step === 1 ? (
+              <>
+                <div className="form-group">
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    placeholder="Email"
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    placeholder="Create a password"
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                    placeholder="Confirm your password"
+                  />
+                </div>
+                <div className="form-action">
+                  <button type="button" className="auth-button" onClick={handleNextStep}>
+                    Next
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
+                    placeholder="First name"
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    required
+                    placeholder="Last name"
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Phone (optional)"
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    id="addressLine1"
+                    name="addressLine1"
+                    value={formData.addressLine1}
+                    onChange={handleChange}
+                    placeholder="Address (optional)"
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    placeholder="City (optional)"
+                  />
+                </div>
+                <div className="form-action">
+                  <button type="button" className="auth-button-secondary" onClick={handlePrevStep}>
+                    Back
+                  </button>
+                  <button type="submit" className="auth-button" disabled={loading}>
+                    {loading ? 'Signing up...' : 'Create account'}
+                  </button>
+                </div>
+              </>
+            )}
+          </form>
+        </div>
       </div>
     </div>
   );
