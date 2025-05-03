@@ -52,6 +52,7 @@ const LandingPage = () => {
             <a href="#" className="nav-link active" onClick={(e) => { e.preventDefault(); window.scrollTo({top: 0, behavior: 'smooth'}); }}>Home</a>
             <a href="#features" className="nav-link" onClick={(e) => { e.preventDefault(); document.getElementById('features').scrollIntoView({behavior: 'smooth'}); }}>Features</a>
             <a href="#testimonials" className="nav-link" onClick={(e) => { e.preventDefault(); document.getElementById('testimonials').scrollIntoView({behavior: 'smooth'}); }}>Testimonials</a>
+            <a href="#donate" className="nav-link" onClick={(e) => { e.preventDefault(); document.getElementById('donate').scrollIntoView({behavior: 'smooth'}); }}>Donate</a>
             <a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); alert('Contact coming soon!'); }}>Contact</a>
           </nav>
         </div>
@@ -94,6 +95,27 @@ const LandingPage = () => {
               <div className="testimonial-name">- {t.name}</div>
             </div>
           ))}
+        </div>
+      </section>
+      <section className="donate-section" id="donate">
+        <h2>Make a Difference</h2>
+        <div className="donate-content">
+          <div className="donate-info">
+            <h3>Your Support Matters</h3>
+            <p>Every donation helps us provide:</p>
+            <ul className="donate-benefits">
+              <li>❤️ Medical care for sick and injured animals</li>
+              <li>🏥 Vaccinations and spaying/neutering</li>
+              <li>🍖 Food and shelter for rescued animals</li>
+              <li>🏡 Support for our adoption program</li>
+            </ul>
+            <button className="main-btn donate-btn" onClick={() => alert('Donation system coming soon!')}>
+              Donate Now
+            </button>
+          </div>
+          <div className="donate-image">
+            <img src={catDogImage} alt="Help Animals" className="donate-img" />
+          </div>
         </div>
       </section>
       <AnimalFooterIllustration />
