@@ -19,34 +19,38 @@ const AdoptionPage = () => {
       setLoading(true);
       console.log('Fetching animals from API...');
       
-      // Log the request URL
       const apiUrl = 'http://localhost:3001/api/animals';
       console.log('Making request to:', apiUrl);
       
       const response = await axios.get(apiUrl);
       console.log('API Response:', response.data);
-      console.log('Response data type:', typeof response.data);
-      console.log('Is array?', Array.isArray(response.data));
-      console.log('Number of animals:', response.data.length);
       
       if (!Array.isArray(response.data)) {
         console.error('Expected array but got:', typeof response.data);
         throw new Error('Invalid response format');
       }
       
-      setAnimals(response.data);
+      // Transform the data to match the expected format
+      const transformedData = response.data.map(animal => ({
+        animal_id: animal.animal_id,
+        name: animal.name,
+        species: animal.species,
+        breed: animal.breed,
+        age: animal.age,
+        gender: animal.gender,
+        health_status: animal.health_status,
+        status: animal.status,
+        image_url: animal.image_url || 'https://via.placeholder.com/300x200?text=Pet+Image'
+      }));
+      
+      console.log('Transformed data:', transformedData);
+      setAnimals(transformedData);
       setError(null);
     } catch (err) {
       console.error('Error details:', {
         message: err.message,
         response: err.response?.data,
-        status: err.response?.status,
-        headers: err.response?.headers,
-        config: {
-          url: err.config?.url,
-          method: err.config?.method,
-          headers: err.config?.headers
-        }
+        status: err.response?.status
       });
       setError(`Failed to fetch animals: ${err.message}`);
     } finally {

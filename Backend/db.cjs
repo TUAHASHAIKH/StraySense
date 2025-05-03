@@ -55,16 +55,22 @@ router.get('/api/animals', async (req, res) => {
   try {
     console.log('Fetching available animals from database...');
     const connection = await pool.getConnection();
+    
+    // First, let's see what's in the table
+    const [allRows] = await connection.execute('SELECT * FROM animals');
+    console.log('All animals in database:', allRows);
+    
+    // Now get available animals
     const [rows] = await connection.execute(
       'SELECT * FROM animals WHERE status = "available"'
     );
+    console.log('Available animals:', rows);
+    
     connection.release();
-    console.log('Database query result:', rows);
-    console.log('Found', rows.length, 'available animals');
     res.json(rows);
   } catch (error) {
     console.error('Error fetching animals:', error);
-    res.status(500).json({ error: 'Failed to fetch animals' });
+    res.status(500).json({ error: 'Failed to fetch animals', details: error.message });
   }
 });
 
@@ -93,21 +99,34 @@ router.post('/api/adopt', async (req, res) => {
   const { user_id, animal_id } = req.body;
   
   try {
+    console.log('Processing adoption request:', { user_id, animal_id });
     const connection = await pool.getConnection();
     await connection.beginTransaction();
 
     try {
+      // First check if animal exists and is available
+      const [animal] = await connection.execute(
+        'SELECT * FROM animals WHERE animal_id = ? AND status = "available"',
+        [animal_id]
+      );
+
+      if (animal.length === 0) {
+        throw new Error('Animal not found or not available for adoption');
+      }
+
       // Create adoption record
       const [adoptionResult] = await connection.execute(
         'INSERT INTO adoptions (user_id, animal_id, status, application_date) VALUES (?, ?, "pending", NOW())',
         [user_id, animal_id]
       );
+      console.log('Adoption record created:', adoptionResult);
 
       // Update animal status
-      await connection.execute(
+      const [updateResult] = await connection.execute(
         'UPDATE animals SET status = "pending_adoption" WHERE animal_id = ?',
         [animal_id]
       );
+      console.log('Animal status updated:', updateResult);
 
       await connection.commit();
       res.json({ 
@@ -122,7 +141,7 @@ router.post('/api/adopt', async (req, res) => {
     }
   } catch (error) {
     console.error('Error processing adoption:', error);
-    res.status(500).json({ error: 'Failed to process adoption request' });
+    res.status(500).json({ error: 'Failed to process adoption request', details: error.message });
   }
 });
 

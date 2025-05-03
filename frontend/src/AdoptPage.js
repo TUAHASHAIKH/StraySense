@@ -15,101 +15,39 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdoptPage.css';
 import logo from './assets/logo.jpg';
+import axios from 'axios';
 
 const AdoptPage = () => {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState('All');
   const [pets, setPets] = useState([]); // Will be populated from database
   const [loading, setLoading] = useState(false); // For loading state when fetching from database
+  const [error, setError] = useState(null);
 
-  // TODO: Replace with actual API call to fetch pets from database
-  // useEffect(() => {
-  //   const fetchPets = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const response = await fetch('/api/pets');
-  //       const data = await response.json();
-  //       setPets(data);
-  //     } catch (error) {
-  //       console.error('Error fetching pets:', error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchPets();
-  // }, []);
-
-  // Temporary dummy data - will be replaced with database data
-  const dummyPets = [
-    {
-      id: 1,
-      name: "Luna",
-      type: "Cat",
-      age: "2 years",
-      image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80",
-      description: "A playful and affectionate cat who loves to cuddle and play with toys."
-    },
-    {
-      id: 2,
-      name: "Max",
-      type: "Dog",
-      age: "3 years",
-      image: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80",
-      description: "A friendly and energetic dog who loves long walks and playing fetch."
-    },
-    {
-      id: 3,
-      name: "Bella",
-      type: "Cat",
-      age: "1 year",
-      image: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=600&q=80",
-      description: "A sweet and gentle cat who enjoys sunbathing and playing with string toys."
-    },
-    {
-      id: 4,
-      name: "Charlie",
-      type: "Dog",
-      age: "4 years",
-      image: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=600&q=80",
-      description: "A loyal and intelligent dog who loves learning new tricks and going on adventures."
-    },
-    {
-      id: 5,
-      name: "Oliver",
-      type: "Cat",
-      age: "3 years",
-      image: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=600&q=80",
-      description: "A curious and independent cat who loves exploring and watching birds from the window."
-    },
-    {
-      id: 6,
-      name: "Daisy",
-      type: "Dog",
-      age: "2 years",
-      image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=600&q=80",
-      description: "A friendly and playful dog who loves making new friends and playing in the park."
-    },
-    {
-      id: 7,
-      name: "Pepper",
-      type: "Other",
-      age: "1 year",
-      image: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?auto=format&fit=crop&w=600&q=80",
-      description: "A cute and friendly rabbit who loves hopping around and munching on fresh vegetables."
-    },
-    {
-      id: 8,
-      name: "Rocky",
-      type: "Other",
-      age: "2 years",
-      image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=600&q=80",
-      description: "A gentle and curious hamster who enjoys exploring his habitat and playing with toys."
-    }
-  ];
-
-  // Initialize pets with dummy data
   useEffect(() => {
-    setPets(dummyPets);
+    const fetchPets = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('http://localhost:3001/api/animals');
+        // Map backend fields to frontend expected fields
+        const mappedPets = response.data.map(animal => ({
+          id: animal.animal_id,
+          name: animal.name,
+          type: animal.species,
+          age: animal.age,
+          image: animal.image_path || 'https://via.placeholder.com/300x200?text=Pet+Image',
+          description: animal.health_status || 'No description available',
+          status: animal.status
+        }));
+        setPets(mappedPets);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch animals: ' + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPets();
   }, []);
 
   // Filter pets based on selected type
