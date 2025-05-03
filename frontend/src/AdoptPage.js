@@ -1,60 +1,79 @@
 // AdoptPage.js - Displays animals available for adoption
 // Fetches data from backend API and displays in a card layout
 
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import AnimalFooterIllustration from './AnimalFooterIllustration';
-import './AdoptPage.css'; // We'll create this for custom styles
+import './AdoptPage.css';
+import logo from './assets/logo.jpg';
 
 const AdoptPage = () => {
-  const [animals, setAnimals] = useState([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Fetch animal data from backend API
-  useEffect(() => {
-    // In the future, this will fetch from a real database
-    axios.get('http://localhost:5000/api/animals')
-      .then(response => {
-        setAnimals(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching animals:', error);
-        setLoading(false);
-      });
-  }, []);
+  const pets = [
+    {
+      id: 1,
+      name: "Luna",
+      type: "Cat",
+      age: "2 years",
+      image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80",
+      description: "A playful and affectionate cat who loves to cuddle and play with toys."
+    },
+    {
+      id: 2,
+      name: "Max",
+      type: "Dog",
+      age: "3 years",
+      image: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80",
+      description: "A friendly and energetic dog who loves long walks and playing fetch."
+    },
+    // Add more pets as needed
+  ];
 
   return (
-    <div className="adopt-bg">
-      <div className="adopt-card">
-        <header className="adopt-header">
-          <span className="logo" role="img" aria-label="dog">🐶</span>
-          <span className="title">Stray Sense</span>
-        </header>
-        <main>
-          <button className="back-btn" onClick={() => navigate('/')}>← Back</button>
-          <h2>Animals Available for Adoption</h2>
-          {loading ? (
-            <p>Loading animals...</p>
-          ) : (
-            <div className="animal-grid">
-              {animals.map(animal => (
-                <div className="animal-card" key={animal.id}>
-                  <img src={animal.image} alt={animal.name} className="animal-card-img" />
-                  <h3>{animal.name}</h3>
-                  <p>Type: {animal.type}</p>
-                  <p>Breed: {animal.breed}</p>
-                  <p>Age: {animal.age} years</p>
-                  <button className="adopt-btn" onClick={() => alert('Adoption process coming soon!')}>Adopt</button>
+    <div className="adopt-page">
+      <header className="adopt-header">
+        <div className="header-content">
+          <div className="logo-title">
+            <img src={logo} alt="StraySense Logo" className="logo" />
+            <span className="title">StraySense</span>
+          </div>
+          <nav className="nav-links">
+            <a href="/" className="nav-link" onClick={(e) => { e.preventDefault(); navigate('/'); }}>Home</a>
+            <a href="#filters" className="nav-link active">Adopt</a>
+            <a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); alert('Coming soon!'); }}>Donate</a>
+          </nav>
+        </div>
+      </header>
+
+      <main className="adopt-content">
+        <div className="filters" id="filters">
+          <h3>Find Your Perfect Companion</h3>
+          <div className="filter-group">
+            <button className="filter-button active">All</button>
+            <button className="filter-button">Dogs</button>
+            <button className="filter-button">Cats</button>
+            <button className="filter-button">Other</button>
+          </div>
+        </div>
+
+        <div className="adopt-grid">
+          {pets.map(pet => (
+            <div className="pet-card" key={pet.id}>
+              <div className="pet-image-container">
+                <img src={pet.image} alt={pet.name} className="pet-image" />
+              </div>
+              <div className="pet-info">
+                <h3 className="pet-name">{pet.name}</h3>
+                <div className="pet-details">
+                  <span>{pet.type}</span> • <span>{pet.age}</span>
                 </div>
-              ))}
+                <p className="pet-description">{pet.description}</p>
+                <button className="adopt-button">Adopt {pet.name}</button>
+              </div>
             </div>
-          )}
-        </main>
-        <AnimalFooterIllustration />
-      </div>
+          ))}
+        </div>
+      </main>
     </div>
   );
 };
