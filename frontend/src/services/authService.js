@@ -8,6 +8,7 @@ export const loginUser = async (credentials) => {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify(credentials),
     });
 
@@ -17,9 +18,11 @@ export const loginUser = async (credentials) => {
       throw new Error(data.message || 'Login failed');
     }
     
-    // Store the token
+    // Store the token and session info
     if (data.token) {
       localStorage.setItem('token', data.token);
+      localStorage.setItem('session_id', data.session_id);
+      localStorage.setItem('user', JSON.stringify(data.user));
     }
     
     return data;
@@ -36,6 +39,7 @@ export const registerUser = async (userData) => {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify(userData),
     });
 
@@ -52,37 +56,39 @@ export const registerUser = async (userData) => {
   }
 };
 
-export const logout = () => {
-  localStorage.removeItem('token');
+export const logout = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (token) {
+      await fetch(`${API_URL}/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        credentials: 'include'
+      });
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+  } finally {
+    // Clear local storage regardless of API call success
+    localStorage.removeItem('token');
+    localStorage.removeItem('session_id');
+    localStorage.removeItem('user');
+  }
 };
 
 export const isAuthenticated = () => {
-  return localStorage.getItem('token') !== null;
+  return localStorage.getItem('token') !== null && 
+         localStorage.getItem('session_id') !== null;
 };
 
-export const getCurrentUser = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-      return null;
-    }
-    
-    const response = await fetch(`${API_URL}/users/me`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
+export const getCurrentUser = () => {
+  const userStr = localStorage.getItem('user');
+  return userStr ? JSON.parse(userStr) : null;
+};
 
-    const data = await response.json();
-    
-    if (!response.ok) {
-      throw new Error(data.message || 'Failed to get user data');
-    }
-    
-    return data;
-  } catch (error) {
-    console.error('Get current user error:', error);
-    return null;
-  }
+export const getAuthHeader = () => {
+  const token = localStorage.getItem('token');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
 };

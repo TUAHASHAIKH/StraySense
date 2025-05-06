@@ -1,6 +1,7 @@
 // src/components/auth/LoginForm.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { loginUser } from '../../services/authService';
 import '../../styles/auth.css';
 
 const LoginForm = () => {
@@ -24,14 +25,7 @@ const LoginForm = () => {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Login failed');
-      localStorage.setItem('token', data.token);
+      const data = await loginUser(formData);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
