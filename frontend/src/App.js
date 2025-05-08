@@ -4,6 +4,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginForm from './components/auth/LoginForm';
 import SignupForm from './components/auth/SignupForm';
 import Dashboard from './pages/Dashboard';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import './styles/global.css';
 
@@ -20,6 +22,8 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route path="/admin" element={<AdminLogin />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/" element={<Navigate to="/login" />} />
     </Routes>
   );

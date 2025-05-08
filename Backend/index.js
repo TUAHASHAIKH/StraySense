@@ -177,6 +177,67 @@ app.post('/api/auth/logout', validateSession, async (req, res) => {
   }
 });
 
+// Admin verification endpoint
+app.post('/api/admin/verify', async (req, res) => {
+  const { password } = req.body;
+  
+  if (password !== 'straysense') {
+    return res.status(401).json({ message: 'Invalid admin password' });
+  }
+
+  // Create admin session token
+  const token = jwt.sign(
+    { role: 'admin' },
+    JWT_SECRET,
+    { expiresIn: '24h' }
+  );
+
+  res.json({ token });
+});
+
+// Admin middleware
+const validateAdmin = (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (decoded.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    req.admin = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+};
+
+// Protected admin route example
+app.get('/api/admin/stats', validateAdmin, async (req, res) => {
+  try {
+    // Get total users
+    const [userCount] = await pool.query('SELECT COUNT(*) as count FROM Users');
+    
+    // Get total animals
+    const [animalCount] = await pool.query('SELECT COUNT(*) as count FROM Animals');
+    
+    // Get total stray reports
+    const [reportCount] = await pool.query('SELECT COUNT(*) as count FROM Stray_Reports WHERE status = "pending"');
+
+    res.json({
+      totalUsers: userCount[0].count,
+      totalAnimals: animalCount[0].count,
+      activeReports: reportCount[0].count
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
