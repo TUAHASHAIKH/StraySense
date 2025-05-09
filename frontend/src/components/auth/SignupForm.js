@@ -95,115 +95,115 @@ const SignupForm = () => {
         <div className="auth-form-box auth-animate-in">
           <h2>Create an account</h2>
           <p className="auth-subtitle">Already have an account? <Link to="/login">Log in</Link></p>
-          {error && <div className="auth-error">{error}</div>}
-          <form onSubmit={handleSubmit} className="auth-form">
-            {step === 1 ? (
-              <>
-                <div className="form-group">
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
+        {error && <div className="auth-error">{error}</div>}
+        <form onSubmit={handleSubmit} className="auth-form">
+          {step === 1 ? (
+            <>
+              <div className="form-group">
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
                     placeholder="Email"
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    placeholder="Create a password"
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                    placeholder="Confirm your password"
-                  />
-                </div>
-                <div className="form-action">
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  placeholder="Create a password"
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  placeholder="Confirm your password"
+                />
+              </div>
+              <div className="form-action">
                   <button type="button" className="auth-button" onClick={handleNextStep}>
-                    Next
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    required
+                  Next
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="form-group">
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
                     placeholder="First name"
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    required
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
                     placeholder="Last name"
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
                     placeholder="Phone (optional)"
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    id="addressLine1"
-                    name="addressLine1"
-                    value={formData.addressLine1}
-                    onChange={handleChange}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  id="addressLine1"
+                  name="addressLine1"
+                  value={formData.addressLine1}
+                  onChange={handleChange}
                     placeholder="Address (optional)"
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    id="city"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
                     placeholder="City (optional)"
-                  />
-                </div>
-                <div className="form-action">
+                />
+              </div>
+              <div className="form-action">
                   <button type="button" className="auth-button-secondary" onClick={handlePrevStep}>
-                    Back
-                  </button>
+                  Back
+                </button>
                   <button type="submit" className="auth-button" disabled={loading}>
                     {loading ? 'Signing up...' : 'Create account'}
-                  </button>
-                </div>
-              </>
-            )}
+                </button>
+              </div>
+            </>
+          )}
           </form>
-        </div>
+          </div>
       </div>
     </div>
   );

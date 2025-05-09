@@ -238,6 +238,60 @@ app.get('/api/admin/stats', validateAdmin, async (req, res) => {
   }
 });
 
+// Get all animals
+app.get('/api/admin/animals', validateAdmin, async (req, res) => {
+  try {
+    const [animals] = await pool.query('SELECT * FROM Animals');
+    res.json(animals);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Add new animal
+app.post('/api/admin/animals', validateAdmin, async (req, res) => {
+  const { name, species, breed, age, gender, health_status, neutered, shelter_id, status } = req.body;
+  try {
+    const [result] = await pool.query(
+      'INSERT INTO Animals (name, species, breed, age, gender, health_status, neutered, shelter_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [name, species, breed, age, gender, health_status, neutered, shelter_id, status]
+    );
+    res.status(201).json({ animal_id: result.insertId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Edit animal
+app.put('/api/admin/animals/:id', validateAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { name, species, breed, age, gender, health_status, neutered, shelter_id, status } = req.body;
+  try {
+    await pool.query(
+      'UPDATE Animals SET name=?, species=?, breed=?, age=?, gender=?, health_status=?, neutered=?, shelter_id=?, status=? WHERE animal_id=?',
+      [name, species, breed, age, gender, health_status, neutered, shelter_id, status, id]
+    );
+    res.json({ message: 'Animal updated' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete animal
+app.delete('/api/admin/animals/:id', validateAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM Animals WHERE animal_id=?', [id]);
+    res.json({ message: 'Animal deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

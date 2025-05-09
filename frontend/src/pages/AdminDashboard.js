@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Logo from '../components/common/Logo';
 import '../styles/global.css';
 
 const AdminDashboard = () => {
@@ -64,7 +63,7 @@ const AdminDashboard = () => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <div className="logo-container">
-          <Logo width={40} height={40} />
+          <img src="/logo.png" alt="StraySense Logo" className="auth-brand-logo" style={{ width: 40, height: 40, marginRight: 10 }} />
           <h1>StraySense Admin</h1>
         </div>
         <button onClick={handleLogout} className="logout-btn">Logout</button>
@@ -87,6 +86,13 @@ const AdminDashboard = () => {
             <h3>Active Reports</h3>
             <p className="stat-number">{stats.activeReports}</p>
           </div>
+        </div>
+
+        <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button className="action-button primary" style={{ minWidth: 180 }} onClick={() => navigate('/admin/animals')}>Manage Animals</button>
+          <button className="action-button secondary" style={{ minWidth: 180 }}>Manage Shelters</button>
+          <button className="action-button" style={{ minWidth: 180 }}>Manage Reports</button>
+          <button className="action-button" style={{ minWidth: 180 }}>Manage Vaccination</button>
         </div>
       </main>
     </div>

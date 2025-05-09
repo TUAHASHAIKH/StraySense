@@ -6,6 +6,7 @@ import SignupForm from './components/auth/SignupForm';
 import Dashboard from './pages/Dashboard';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import ManageAnimals from './pages/ManageAnimals';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import './styles/global.css';
 
@@ -24,6 +25,7 @@ function App() {
       />
       <Route path="/admin" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/animals" element={<ManageAnimals />} />
       <Route path="/" element={<Navigate to="/login" />} />
     </Routes>
   );
