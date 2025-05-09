@@ -1,0 +1,47 @@
+.stray-report-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+  
+  .stray-report-form h2 {
+    margin-bottom: 1rem;
+    color: var(--dark-blue);
+  }
+  
+  .stray-report-form label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: 500;
+  }
+  
+  .stray-report-form input,
+  .stray-report-form textarea,
+  .stray-report-form select {
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 0.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+  }
+  
+  .stray-report-form button {
+    margin-top: 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  
+  .stray-report-form button:hover {
+    background-color: var(--primary-dark);
+  }
+  
