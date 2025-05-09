@@ -4,8 +4,15 @@ import jwt from 'jsonwebtoken';
 import pool from './database.js';
 import crypto from 'crypto';
 import cors from 'cors';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const app = express();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Enable CORS for all routes
 app.use(cors({
@@ -18,6 +25,19 @@ app.use(cors({
 app.use(express.json());
 
 const JWT_SECRET = 'straysense_secret_key'; // Use env var in production
+
+// Multer setup for animal pictures
+const animalPicStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../frontend/public/animal_pictures'));
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, 'animal-' + uniqueSuffix + ext);
+  }
+});
+const uploadAnimalPic = multer({ storage: animalPicStorage });
 
 // Signup endpoint
 app.post('/api/auth/signup', async (req, res) => {
@@ -249,13 +269,23 @@ app.get('/api/admin/animals', validateAdmin, async (req, res) => {
   }
 });
 
-// Add new animal
+// Animal image upload endpoint
+app.post('/api/admin/animal/upload', validateAdmin, uploadAnimalPic.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+  // Return the public path to store in DB
+  const imagePath = `/animal_pictures/${req.file.filename}`;
+  res.json({ image_path: imagePath });
+});
+
+// Update add animal endpoint to accept image_path
 app.post('/api/admin/animals', validateAdmin, async (req, res) => {
-  const { name, species, breed, age, gender, health_status, neutered, shelter_id, status } = req.body;
+  const { name, species, breed, age, gender, health_status, neutered, shelter_id, status, image_path } = req.body;
   try {
     const [result] = await pool.query(
-      'INSERT INTO Animals (name, species, breed, age, gender, health_status, neutered, shelter_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [name, species, breed, age, gender, health_status, neutered, shelter_id, status]
+      'INSERT INTO Animals (name, species, breed, age, gender, health_status, neutered, shelter_id, status, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [name, species, breed, age, gender, health_status, neutered, shelter_id, status, image_path]
     );
     res.status(201).json({ animal_id: result.insertId });
   } catch (err) {
@@ -264,14 +294,14 @@ app.post('/api/admin/animals', validateAdmin, async (req, res) => {
   }
 });
 
-// Edit animal
+// Update edit animal endpoint to accept image_path
 app.put('/api/admin/animals/:id', validateAdmin, async (req, res) => {
   const { id } = req.params;
-  const { name, species, breed, age, gender, health_status, neutered, shelter_id, status } = req.body;
+  const { name, species, breed, age, gender, health_status, neutered, shelter_id, status, image_path } = req.body;
   try {
     await pool.query(
-      'UPDATE Animals SET name=?, species=?, breed=?, age=?, gender=?, health_status=?, neutered=?, shelter_id=?, status=? WHERE animal_id=?',
-      [name, species, breed, age, gender, health_status, neutered, shelter_id, status, id]
+      'UPDATE Animals SET name=?, species=?, breed=?, age=?, gender=?, health_status=?, neutered=?, shelter_id=?, status=?, image_path=? WHERE animal_id=?',
+      [name, species, breed, age, gender, health_status, neutered, shelter_id, status, image_path, id]
     );
     res.json({ message: 'Animal updated' });
   } catch (err) {
