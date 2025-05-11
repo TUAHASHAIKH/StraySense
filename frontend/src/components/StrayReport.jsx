@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './StrayReport.css';
 import MapPicker from "./MapPicker";
-
-
+import { useAuth } from '../context/AuthContext';
 
 const provinces = {
   Punjab: ['Lahore', 'Rawalpindi', 'Faisalabad', 'Multan'],
@@ -18,7 +17,8 @@ const provinces = {
 const animalTypes = ['Dog', 'Cat', 'Cow', 'Donkey', 'Other'];
 const animalSizes = ['Small', 'Medium', 'Large'];
 
-function StrayReportForm({ userId }) {
+function StrayReportForm() {
+  const { user, token, isAuthenticated } = useAuth();
   const [latLng, setLatLng] = useState({ lat: null, lng: null });
 
   const handleMapClick = (location) => {
@@ -29,6 +29,7 @@ function StrayReportForm({ userId }) {
       longitude: location.lng,
     }));
   };
+
   const [formData, setFormData] = useState({
     description: '',
     animal_type: '',
@@ -43,33 +44,52 @@ function StrayReportForm({ userId }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
   
-    // Update the form data state
     setFormData((prev) => {
       let newState = { ...prev, [name]: value };
   
-      // Reset city when province changes
       if (name === 'province') {
-        newState.city = ''; // Reset city when province changes
+        newState.city = '';
       }
   
       return newState;
     });
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isAuthenticated()) {
+      alert('Please log in to submit a report');
+      return;
+    }
+
     try {
-      await axios.post('http://localhost:5000/api/stray-reports', {
-        user_id: userId,
-        ...formData,
+      await axios.post('http://localhost:5000/api/stray-reports', formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       alert('Report submitted successfully!');
+      // Reset form
+      setFormData({
+        description: '',
+        animal_type: '',
+        animal_size: '',
+        visible_injuries: '',
+        province: '',
+        city: '',
+        latitude: null,
+        longitude: null,
+      });
+      setLatLng({ lat: null, lng: null });
     } catch (err) {
       console.error('Error reporting stray animal:', err);
-      alert('Failed to submit report.');
+      alert('Failed to submit report. Please try again.');
     }
   };
+
+  if (!isAuthenticated()) {
+    return <div>Please log in to submit a stray animal report.</div>;
+  }
 
   return (
     <form className="stray-report-form" onSubmit={handleSubmit}>

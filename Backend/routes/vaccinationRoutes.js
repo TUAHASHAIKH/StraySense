@@ -3,6 +3,7 @@ import { getVaccinationSchedule } from '../controllers/vaccinationController.js'
 
 const router = express.Router();
 
-router.get('/user/:userId/schedule', getVaccinationSchedule);
+// Get vaccination schedule for the authenticated user
+router.get('/schedule', getVaccinationSchedule);
 
 export default router;

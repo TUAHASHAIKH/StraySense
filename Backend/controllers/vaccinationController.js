@@ -1,13 +1,16 @@
-import pool from '../database.js'; // This is the only correct import
+import pool from '../database.js';
 
 export const getVaccinationSchedule = async (req, res) => {
-  const userId = req.params.userId;
   try {
-      const [rows] = await pool.execute(`CALL GetVaccinationSchedule(?);`, [userId]);
-      res.json(rows[0]); // Stored procedures return a nested array; first result is rows
+    // Use req.user.user_id from the validated session
+    const userId = req.user.user_id;
+    
+    const [rows] = await pool.execute(`CALL GetVaccinationSchedule(?);`, [userId]
+    );
+    
+    res.json(rows);
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Server error' });
+    console.error('Error fetching vaccination schedule:', err);
+    res.status(500).json({ error: 'Server error' });
   }
 };
-
