@@ -13,76 +13,107 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './AdoptPage.css';
 import logo from './assets/logo.jpg';
-import axios from 'axios';
+import authService from './services/authService';
 
 const AdoptPage = () => {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState('All');
-  const [pets, setPets] = useState([]); // Will be populated from database
-  const [loading, setLoading] = useState(false); // For loading state when fetching from database
+  const [pets, setPets] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userAdoptions, setUserAdoptions] = useState([]);
 
   useEffect(() => {
-    const fetchPets = async () => {
-      setLoading(true);
+    const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/animals');
-        // Map backend fields to frontend expected fields
-        const mappedPets = response.data.map(animal => ({
-          id: animal.animal_id,
-          name: animal.name,
-          type: animal.species,
-          age: animal.age,
-          image: animal.image_path || 'https://via.placeholder.com/300x200?text=Pet+Image',
-          description: animal.health_status || 'No description available',
-          status: animal.status
-        }));
-        setPets(mappedPets);
+        setLoading(true);
+        // Fetch both pets and user adoptions in parallel
+        const [petsResponse, adoptionsResponse] = await Promise.all([
+          axios.get('http://localhost:3001/api/animals'),
+          authService.getUserAdoptions()
+        ]);
+        
+        setPets(petsResponse.data);
+        setUserAdoptions(adoptionsResponse);
         setError(null);
       } catch (err) {
-        setError('Failed to fetch animals: ' + err.message);
+        console.error('Error fetching data:', err);
+        setError('Failed to load data. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
-    fetchPets();
-  }, []);
 
-  // Filter pets based on selected type
+    if (authService.isAuthenticated()) {
+      fetchData();
+    } else {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  const handleAdopt = async (animalId) => {
+    try {
+      const user = authService.getCurrentUser();
+      console.log('Current user:', user);
+      console.log('Attempting to adopt animal:', animalId);
+      
+      if (!user || !user.user_id) {
+        console.error('No user found or missing user_id');
+        alert('Please log in to adopt an animal');
+        return;
+      }
+
+      const requestData = {
+        userId: user.user_id,
+        animalId: parseInt(animalId)
+      };
+      console.log('Sending adoption request with data:', requestData);
+      
+      const response = await axios.post('http://localhost:3001/api/adopt', requestData, {
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authService.getToken()}`
+        }
+      });
+      
+      console.log('Adoption response:', response.data);
+      
+      if (response.data.message === 'Adoption request submitted successfully') {
+        // Refresh the adoptions list
+        const adoptions = await authService.getUserAdoptions();
+        setUserAdoptions(adoptions);
+        alert('Adoption request submitted successfully!');
+      }
+    } catch (err) {
+      console.error('Error submitting adoption request:', err);
+      console.error('Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
+      alert(err.response?.data?.error || 'Failed to submit adoption request');
+    }
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/login');
+  };
+
   const filteredPets = activeFilter === 'All' 
     ? pets 
-    : pets.filter(pet => {
-        // Convert both the pet type and active filter to lowercase for comparison
-        const petType = pet.type.toLowerCase();
-        const filterType = activeFilter.toLowerCase();
-        return petType === filterType;
-      });
+    : pets.filter(pet => pet.species.toLowerCase() === activeFilter.toLowerCase());
 
-  // Add console log for debugging
-  console.log('Active Filter:', activeFilter);
-  console.log('Filtered Pets:', filteredPets);
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
 
-  // TODO: Implement adoption process
-  const handleAdopt = async (petId) => {
-    // Will be replaced with actual adoption API call
-    // try {
-    //   const response = await fetch(`/api/pets/${petId}/adopt`, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ status: 'pending' }),
-    //   });
-    //   if (response.ok) {
-    //     // Update local state or refetch pets
-    //   }
-    // } catch (error) {
-    //   console.error('Error adopting pet:', error);
-    // }
-    alert('Adoption process coming soon!');
-  };
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
     <div className="adopt-page">
@@ -93,9 +124,9 @@ const AdoptPage = () => {
             <span className="title">StraySense</span>
           </div>
           <nav className="nav-links">
-            <a href="/" className="nav-link" onClick={(e) => { e.preventDefault(); navigate('/'); }}>Home</a>
-            <a href="#filters" className="nav-link active">Adopt</a>
-            <a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); alert('Coming soon!'); }}>Donate</a>
+            <a href="/adopt" className="nav-link active">Adopt</a>
+            <a href="/my-adoptions" className="nav-link">My Adoptions</a>
+            <button onClick={handleLogout} className="logout-button">Logout</button>
           </nav>
         </div>
       </header>
@@ -106,69 +137,56 @@ const AdoptPage = () => {
           <div className="filter-group">
             <button 
               className={`filter-button ${activeFilter === 'All' ? 'active' : ''}`}
-              onClick={() => {
-                console.log('Setting filter to All');
-                setActiveFilter('All');
-              }}
+              onClick={() => setActiveFilter('All')}
             >
               All
             </button>
             <button 
-              className={`filter-button ${activeFilter === 'Dog' ? 'active' : ''}`}
-              onClick={() => {
-                console.log('Setting filter to Dog');
-                setActiveFilter('Dog');
-              }}
+              className={`filter-button ${activeFilter === 'dog' ? 'active' : ''}`}
+              onClick={() => setActiveFilter('dog')}
             >
               Dogs
             </button>
             <button 
-              className={`filter-button ${activeFilter === 'Cat' ? 'active' : ''}`}
-              onClick={() => {
-                console.log('Setting filter to Cat');
-                setActiveFilter('Cat');
-              }}
+              className={`filter-button ${activeFilter === 'cat' ? 'active' : ''}`}
+              onClick={() => setActiveFilter('cat')}
             >
               Cats
             </button>
             <button 
-              className={`filter-button ${activeFilter === 'Other' ? 'active' : ''}`}
-              onClick={() => {
-                console.log('Setting filter to Other');
-                setActiveFilter('Other');
-              }}
+              className={`filter-button ${activeFilter === 'other' ? 'active' : ''}`}
+              onClick={() => setActiveFilter('other')}
             >
               Other
             </button>
           </div>
         </div>
 
-        {loading ? (
-          <div className="loading">Loading pets...</div>
-        ) : (
-          <div className="adopt-grid">
-            {filteredPets.map(pet => (
-              <div className="pet-card" key={pet.id}>
-                <div className="pet-image-container">
-                  <img src={pet.image} alt={pet.name} className="pet-image" />
-                </div>
-                <div className="pet-info">
-                  <h3 className="pet-name">{pet.name}</h3>
-                  <div className="pet-details">
-                    <span>{pet.type}</span> • <span>{pet.age}</span>
-                  </div>
-                  <p className="pet-description">{pet.description}</p>
-                  <button 
-                    className="adopt-button"
-                    onClick={() => handleAdopt(pet.id)}
-                  >
-                    Adopt {pet.name}
-                  </button>
-                </div>
+        <div className="adopt-grid">
+          {filteredPets.map(pet => (
+            <div className="pet-card" key={pet.animal_id}>
+              <div className="pet-image-container">
+                <img src={pet.image_url || 'default-pet.jpg'} alt={pet.name} className="pet-image" />
               </div>
-            ))}
-          </div>
-        )}
+              <div className="pet-info">
+                <h3 className="pet-name">{pet.name}</h3>
+                <div className="pet-details">
+                  <span>{pet.species}</span> • <span>{pet.age} years old</span>
+                </div>
+                <p className="pet-description">{pet.description}</p>
+                <button 
+                  className="adopt-button"
+                  onClick={() => handleAdopt(pet.animal_id)}
+                  disabled={pet.status !== 'available' || userAdoptions.some(a => a.animal_id === pet.animal_id)}
+                >
+                  {pet.status !== 'available' ? 'Not Available' : 
+                   userAdoptions.some(a => a.animal_id === pet.animal_id) ? 'Already Requested' :
+                   `Adopt ${pet.name}`}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </main>
     </div>
   );

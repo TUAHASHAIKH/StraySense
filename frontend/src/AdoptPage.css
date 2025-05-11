@@ -233,6 +233,74 @@
   transform: translateY(-2px);
 }
 
+.session-selector {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.session-selector label {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.session-selector select {
+  padding: 0.8rem 1.5rem;
+  border: 2px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  color: var(--text-color);
+  background: white;
+  cursor: pointer;
+  min-width: 300px;
+}
+
+.session-selector select:focus {
+  outline: none;
+  border-color: var(--primary-dark);
+}
+
+.adopt-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.session-warning {
+  background: #fff3cd;
+  color: #856404;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: var(--box-shadow);
+}
+
+.logout-button {
+  padding: 0.8rem 1.5rem;
+  background: #ff9248;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.logout-button:hover {
+  background: #e87d2d;
+  transform: translateY(-2px);
+}
+
 @media (max-width: 768px) {
   .adopt-header {
     padding: 1rem;

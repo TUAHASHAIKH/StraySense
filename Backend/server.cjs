@@ -5,9 +5,9 @@ const dbRouter = require('./db.cjs');
 const app = express();
 const port = 3001;
 
-// Enable CORS for all routes
+// CORS configuration
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: ['http://localhost:3000', 'http://localhost:3002'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -15,14 +15,16 @@ app.use(cors({
 // Add request logging middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log('Request body:', req.body);
+  console.log('Request headers:', req.headers);
   next();
 });
 
 // Parse JSON bodies
 app.use(express.json());
 
-// Use the database router
-app.use(dbRouter);
+// Mount the database router at /api
+app.use('/api', dbRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -31,9 +33,10 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-  console.log('CORS enabled for http://localhost:5173');
-  console.log('Test endpoints:');
+  console.log(`Server is running at http://localhost:${port}`);
+  console.log('Available endpoints:');
   console.log('- http://localhost:3001/api/test');
   console.log('- http://localhost:3001/api/animals');
+  console.log('- http://localhost:3001/api/adopt');
+  console.log('- http://localhost:3001/api/sessions');
 }); 
