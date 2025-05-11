@@ -322,6 +322,86 @@ app.delete('/api/admin/animals/:id', validateAdmin, async (req, res) => {
   }
 });
 
+// Shelter Management Routes
+app.get('/api/admin/shelters', validateAdmin, async (req, res) => {
+  try {
+    const [shelters] = await pool.query('SELECT * FROM Shelters ORDER BY name');
+    res.json(shelters);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/api/admin/shelters', validateAdmin, async (req, res) => {
+  const { name, address, city, country, phone, email } = req.body;
+  
+  if (!name || !address || !city || !country) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  try {
+    const [result] = await pool.query(
+      'INSERT INTO Shelters (name, address, city, country, phone, email) VALUES (?, ?, ?, ?, ?, ?)',
+      [name, address, city, country, phone || null, email || null]
+    );
+    
+    const [newShelter] = await pool.query('SELECT * FROM Shelters WHERE shelter_id = ?', [result.insertId]);
+    res.status(201).json(newShelter[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.put('/api/admin/shelters/:id', validateAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { name, address, city, country, phone, email } = req.body;
+  
+  if (!name || !address || !city || !country) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  try {
+    await pool.query(
+      'UPDATE Shelters SET name = ?, address = ?, city = ?, country = ?, phone = ?, email = ? WHERE shelter_id = ?',
+      [name, address, city, country, phone || null, email || null, id]
+    );
+    
+    const [updatedShelter] = await pool.query('SELECT * FROM Shelters WHERE shelter_id = ?', [id]);
+    if (updatedShelter.length === 0) {
+      return res.status(404).json({ message: 'Shelter not found' });
+    }
+    
+    res.json(updatedShelter[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.delete('/api/admin/shelters/:id', validateAdmin, async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    // Check if shelter has any animals
+    const [animals] = await pool.query('SELECT COUNT(*) as count FROM Animals WHERE shelter_id = ?', [id]);
+    if (animals[0].count > 0) {
+      return res.status(400).json({ message: 'Cannot delete shelter with associated animals' });
+    }
+
+    const [result] = await pool.query('DELETE FROM Shelters WHERE shelter_id = ?', [id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Shelter not found' });
+    }
+    
+    res.json({ message: 'Shelter deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

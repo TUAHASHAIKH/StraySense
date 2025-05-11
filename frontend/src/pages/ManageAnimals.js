@@ -136,10 +136,10 @@ const ManageAnimals = () => {
   const [error, setError] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editAnimal, setEditAnimal] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchAnimals();
-    // eslint-disable-next-line
   }, []);
 
   const fetchAnimals = async () => {
@@ -218,6 +218,10 @@ const ManageAnimals = () => {
     }
   };
 
+  const filteredAnimals = animals.filter(animal =>
+    animal.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (loading) return <div className="dashboard-loading">Loading...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
 
@@ -235,8 +239,25 @@ const ManageAnimals = () => {
           <h2>Animals</h2>
           <button className="action-button primary" onClick={handleAddAnimal}>Add New Animal</button>
         </div>
+        
+        <div style={{ marginBottom: '2rem' }}>
+          <input
+            type="text"
+            placeholder="Search animals by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '4px',
+              border: '1px solid #ddd',
+              fontSize: '1rem'
+            }}
+          />
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '2rem' }}>
-          {animals.map(animal => (
+          {filteredAnimals.map(animal => (
             <div key={animal.animal_id} className="stat-card animal-card" style={{ minHeight: 340, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
               <div style={{ width: '100%', height: 160, overflow: 'hidden', borderRadius: '12px', marginBottom: 16, background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <img
@@ -264,13 +285,13 @@ const ManageAnimals = () => {
             </div>
           ))}
         </div>
-        <AnimalFormModal
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          onSubmit={handleFormSubmit}
-          initialData={editAnimal}
-        />
       </main>
+      <AnimalFormModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleFormSubmit}
+        initialData={editAnimal}
+      />
     </div>
   );
 };

@@ -90,7 +90,7 @@ const AdminDashboard = () => {
 
         <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button className="action-button primary" style={{ minWidth: 180 }} onClick={() => navigate('/admin/animals')}>Manage Animals</button>
-          <button className="action-button secondary" style={{ minWidth: 180 }}>Manage Shelters</button>
+          <button className="action-button secondary" style={{ minWidth: 180 }} onClick={() => navigate('/admin/shelters')}>Manage Shelters</button>
           <button className="action-button" style={{ minWidth: 180 }}>Manage Reports</button>
           <button className="action-button" style={{ minWidth: 180 }}>Manage Vaccination</button>
         </div>
