@@ -280,14 +280,42 @@ app.post('/api/admin/animal/upload', validateAdmin, uploadAnimalPic.single('imag
 });
 
 // Update add animal endpoint to accept image_path
-app.post('/api/admin/animals', validateAdmin, async (req, res) => {
-  const { name, species, breed, age, gender, health_status, neutered, shelter_id, status, image_path } = req.body;
+app.post('/api/admin/animals', validateAdmin, uploadAnimalPic.single('image'), async (req, res) => {
+  let data = req.body;
+  let image_path = data.image_path;
+  // If file is uploaded, set image_path
+  if (req.file) {
+    image_path = `/animal_pictures/${req.file.filename}`;
+  }
+  // Parse booleans and numbers
+  const neutered = data.neutered === 'true' || data.neutered === true;
+  const age = data.age ? parseInt(data.age, 10) : null;
+  const shelter_id = data.shelter_id ? parseInt(data.shelter_id, 10) : null;
   try {
-    const [result] = await pool.query(
-      'INSERT INTO Animals (name, species, breed, age, gender, health_status, neutered, shelter_id, status, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [name, species, breed, age, gender, health_status, neutered, shelter_id, status, image_path]
-    );
-    res.status(201).json({ animal_id: result.insertId });
+    let animal_id;
+    if (data.report_id) {
+      // Get the last animal_id
+      const [lastAnimal] = await pool.query('SELECT animal_id FROM Animals ORDER BY animal_id DESC LIMIT 1');
+      animal_id = lastAnimal.length > 0 ? lastAnimal[0].animal_id + 1 : 1;
+      // Insert animal with the new animal_id
+      await pool.query(
+        'INSERT INTO Animals (animal_id, name, species, breed, age, gender, health_status, neutered, shelter_id, status, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [animal_id, data.name, data.species, data.breed, age, data.gender, data.health_status, neutered, shelter_id, data.status || 'available', image_path]
+      );
+      // Update the report with processed_animal_id
+      await pool.query(
+        'UPDATE Stray_Reports SET processed_animal_id = ? WHERE report_id = ?',
+        [animal_id, data.report_id]
+      );
+    } else {
+      // Normal add
+      const [result] = await pool.query(
+        'INSERT INTO Animals (name, species, breed, age, gender, health_status, neutered, shelter_id, status, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [data.name, data.species, data.breed, age, data.gender, data.health_status, neutered, shelter_id, data.status || 'available', image_path]
+      );
+      animal_id = result.insertId;
+    }
+    res.status(201).json({ animal_id });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
@@ -402,8 +430,41 @@ app.delete('/api/admin/shelters/:id', validateAdmin, async (req, res) => {
   }
 });
 
+// Stray Reports Routes
+app.get('/api/admin/reports', validateAdmin, async (req, res) => {
+  try {
+    const [reports] = await pool.query(`
+      SELECT sr.*, u.first_name, u.last_name 
+      FROM Stray_Reports sr
+      JOIN Users u ON sr.user_id = u.user_id
+      ORDER BY sr.report_date DESC
+    `);
+    res.json(reports);
+  } catch (error) {
+    console.error('Error fetching reports:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.put('/api/admin/reports/:id/status', validateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    
+    await pool.query(
+      'UPDATE Stray_Reports SET status = ?, accepted_date = ? WHERE report_id = ?',
+      [status, status === 'accepted' ? new Date() : null, id]
+    );
+    
+    res.json({ message: 'Report status updated successfully' });
+  } catch (error) {
+    console.error('Error updating report status:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 }); 

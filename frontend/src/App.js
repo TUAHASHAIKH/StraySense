@@ -8,6 +8,7 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import ManageAnimals from './pages/ManageAnimals';
 import ManageShelters from './pages/ManageShelters';
+import ManageReports from './pages/ManageReports';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import './styles/global.css';
 
@@ -28,6 +29,7 @@ function App() {
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/animals" element={<ManageAnimals />} />
       <Route path="/admin/shelters" element={<ManageShelters />} />
+      <Route path="/admin/reports" element={<ManageReports />} />
       <Route path="/" element={<Navigate to="/login" />} />
     </Routes>
   );
