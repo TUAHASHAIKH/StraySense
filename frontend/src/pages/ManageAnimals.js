@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/global.css';
+import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/admin/animals';
 const UPLOAD_URL = 'http://localhost:5000/api/admin/animal/upload';
+const SHELTERS_API = 'http://localhost:5000/api/admin/shelters';
 
 // Helper to convert DB image_path to public URL
 const getImageUrl = (image_path) => {
@@ -31,13 +33,26 @@ function AnimalFormModal({ open, onClose, onSubmit, initialData }) {
   const [preview, setPreview] = useState(initialData?.image_path ? getImageUrl(initialData.image_path) : '/animal.jpg');
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [shelters, setShelters] = useState([]);
 
   useEffect(() => {
     setForm(initialData || defaultAnimal);
     setPreview(initialData?.image_path ? getImageUrl(initialData.image_path) : '/animal.jpg');
     setImageFile(null);
     setError('');
+    fetchShelters();
+    // eslint-disable-next-line
   }, [open, initialData]);
+
+  const fetchShelters = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const res = await axios.get(SHELTERS_API, { headers: { 'Authorization': `Bearer ${token}` } });
+      setShelters(res.data);
+    } catch {
+      setShelters([]);
+    }
+  };
 
   const handleChange = e => {
     const { name, value, type, checked } = e.target;
@@ -108,7 +123,12 @@ function AnimalFormModal({ open, onClose, onSubmit, initialData }) {
             <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input type="checkbox" name="neutered" checked={form.neutered} onChange={handleChange} /> Neutered
             </label>
-            <input name="shelter_id" value={form.shelter_id} onChange={handleChange} placeholder="Shelter ID" type="number" min="1" />
+            <select name="shelter_id" value={form.shelter_id} onChange={handleChange} required>
+              <option value="">Select Shelter</option>
+              {shelters.map(shelter => (
+                <option key={shelter.shelter_id} value={shelter.shelter_id}>{shelter.name}</option>
+              ))}
+            </select>
             <select name="status" value={form.status} onChange={handleChange} required>
               <option value="available">Available</option>
               <option value="pending_adoption">Pending Adoption</option>

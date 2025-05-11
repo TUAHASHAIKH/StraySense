@@ -7,7 +7,10 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalAnimals: 0,
-    activeReports: 0
+    totalShelters: 0,
+    activeReports: 0,
+    activeAdoptionRequests: 0,
+    pendingVaccinations: 0
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -73,7 +76,7 @@ const AdminDashboard = () => {
         <h2>Admin Dashboard</h2>
         <p>Welcome to the StraySense administration panel.</p>
         
-        <div className="admin-stats">
+        <div className="admin-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', margin: '2.5rem 0 0 0' }}>
           <div className="stat-card">
             <h3>Total Users</h3>
             <p className="stat-number">{stats.totalUsers}</p>
@@ -83,17 +86,29 @@ const AdminDashboard = () => {
             <p className="stat-number">{stats.totalAnimals}</p>
           </div>
           <div className="stat-card">
+            <h3>Total Shelters</h3>
+            <p className="stat-number">{stats.totalShelters}</p>
+          </div>
+          <div className="stat-card">
             <h3>Active Reports</h3>
             <p className="stat-number">{stats.activeReports}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Active Adoption Requests</h3>
+            <p className="stat-number">{stats.activeAdoptionRequests}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Pending Vaccinations</h3>
+            <p className="stat-number">{stats.pendingVaccinations}</p>
           </div>
         </div>
 
         <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button className="action-button primary" style={{ minWidth: 180 }} onClick={() => navigate('/admin/animals')}>Manage Animals</button>
           <button className="action-button secondary" style={{ minWidth: 180 }} onClick={() => navigate('/admin/shelters')}>Manage Shelters</button>
-          <button className="action-button" style={{ minWidth: 180 }} onClick={() => navigate('/admin/reports')}>Manage Reports</button>
-          <button className="action-button" style={{ minWidth: 180 }} onClick={() => navigate('/admin/adoptions')}>Manage Adoption Requests</button>
-          <button className="action-button" style={{ minWidth: 180 }} onClick={() => navigate('/admin/vaccinations')}>Manage Vaccinations</button>
+          <button className="action-button report-btn" style={{ minWidth: 180, background: '#ff914d', color: '#fff', border: 'none' }} onClick={() => navigate('/admin/reports')}>Manage Reports</button>
+          <button className="action-button adoption-btn" style={{ minWidth: 180, background: '#4e9cff', color: '#fff', border: 'none' }} onClick={() => navigate('/admin/adoptions')}>Manage Adoption Requests</button>
+          <button className="action-button vaccination-btn" style={{ minWidth: 180, background: '#43c59e', color: '#fff', border: 'none' }} onClick={() => navigate('/admin/vaccinations')}>Manage Vaccinations</button>
         </div>
       </main>
     </div>

@@ -240,17 +240,23 @@ app.get('/api/admin/stats', validateAdmin, async (req, res) => {
   try {
     // Get total users
     const [userCount] = await pool.query('SELECT COUNT(*) as count FROM Users');
-    
     // Get total animals
     const [animalCount] = await pool.query('SELECT COUNT(*) as count FROM Animals');
-    
     // Get total stray reports
     const [reportCount] = await pool.query('SELECT COUNT(*) as count FROM Stray_Reports WHERE status = "pending"');
-
+    // Get total shelters
+    const [shelterCount] = await pool.query('SELECT COUNT(*) as count FROM Shelters');
+    // Get active adoption requests (pending)
+    const [adoptionCount] = await pool.query('SELECT COUNT(*) as count FROM Adoptions WHERE status = "pending"');
+    // Get pending vaccinations (completed_date IS NULL)
+    const [pendingVaccCount] = await pool.query('SELECT COUNT(*) as count FROM Vaccinations WHERE completed_date IS NULL');
     res.json({
       totalUsers: userCount[0].count,
       totalAnimals: animalCount[0].count,
-      activeReports: reportCount[0].count
+      activeReports: reportCount[0].count,
+      totalShelters: shelterCount[0].count,
+      activeAdoptionRequests: adoptionCount[0].count,
+      pendingVaccinations: pendingVaccCount[0].count
     });
   } catch (err) {
     console.error(err);
