@@ -10,6 +10,7 @@ import ManageAnimals from './pages/ManageAnimals';
 import ManageShelters from './pages/ManageShelters';
 import ManageReports from './pages/ManageReports';
 import ManageAdoptions from './pages/ManageAdoptions';
+import ManageVaccinations from './pages/ManageVaccinations';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import './styles/global.css';
 
@@ -32,6 +33,7 @@ function App() {
       <Route path="/admin/shelters" element={<ManageShelters />} />
       <Route path="/admin/reports" element={<ManageReports />} />
       <Route path="/admin/adoptions" element={<ManageAdoptions />} />
+      <Route path="/admin/vaccinations" element={<ManageVaccinations />} />
       <Route path="/" element={<Navigate to="/login" />} />
     </Routes>
   );

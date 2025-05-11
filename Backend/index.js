@@ -511,6 +511,102 @@ app.put('/api/admin/adoptions/:id/status', validateAdmin, async (req, res) => {
   }
 });
 
+// Vaccine Types Management
+app.get('/api/admin/vaccines', validateAdmin, async (req, res) => {
+  try {
+    const [vaccines] = await pool.query('SELECT * FROM Vaccine_Types ORDER BY name');
+    res.json(vaccines);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/api/admin/vaccines', validateAdmin, async (req, res) => {
+  const { name, description } = req.body;
+  if (!name) return res.status(400).json({ message: 'Name is required' });
+  try {
+    const [result] = await pool.query('INSERT INTO Vaccine_Types (name, description) VALUES (?, ?)', [name, description || null]);
+    const [newVaccine] = await pool.query('SELECT * FROM Vaccine_Types WHERE vaccine_id = ?', [result.insertId]);
+    res.status(201).json(newVaccine[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.put('/api/admin/vaccines/:id', validateAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
+  if (!name) return res.status(400).json({ message: 'Name is required' });
+  try {
+    await pool.query('UPDATE Vaccine_Types SET name=?, description=? WHERE vaccine_id=?', [name, description || null, id]);
+    const [updated] = await pool.query('SELECT * FROM Vaccine_Types WHERE vaccine_id=?', [id]);
+    res.json(updated[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.delete('/api/admin/vaccines/:id', validateAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM Vaccine_Types WHERE vaccine_id=?', [id]);
+    res.json({ message: 'Vaccine deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Vaccinations Management
+app.post('/api/admin/vaccinations', validateAdmin, async (req, res) => {
+  const { animal_id, vaccine_id, scheduled_date } = req.body;
+  if (!animal_id || !vaccine_id || !scheduled_date) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+  try {
+    await pool.query(
+      'INSERT INTO Vaccinations (animal_id, vaccine_id, scheduled_date) VALUES (?, ?, ?)',
+      [animal_id, vaccine_id, scheduled_date]
+    );
+    res.status(201).json({ message: 'Vaccination scheduled' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// List all scheduled vaccinations
+app.get('/api/admin/vaccinations', validateAdmin, async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT v.vaccination_id, a.name AS animal_name, vt.name AS vaccine_name, v.scheduled_date, v.completed_date
+      FROM Vaccinations v
+      JOIN Animals a ON v.animal_id = a.animal_id
+      JOIN Vaccine_Types vt ON v.vaccine_id = vt.vaccine_id
+      ORDER BY v.scheduled_date DESC
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Mark vaccination as done
+app.put('/api/admin/vaccinations/:id/complete', validateAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('UPDATE Vaccinations SET completed_date = CURDATE() WHERE vaccination_id = ?', [id]);
+    res.json({ message: 'Vaccination marked as done' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

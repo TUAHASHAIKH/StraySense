@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "bcryptjs": "^3.0.2",
+    "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2"
   }
 }
