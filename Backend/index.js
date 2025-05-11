@@ -463,6 +463,54 @@ app.put('/api/admin/reports/:id/status', validateAdmin, async (req, res) => {
   }
 });
 
+// Adoption Requests Management
+app.get('/api/admin/adoptions', validateAdmin, async (req, res) => {
+  try {
+    const [adoptions] = await pool.query(`
+      SELECT a.*, u.first_name, u.last_name, an.name AS animal_name
+      FROM Adoptions a
+      JOIN Users u ON a.user_id = u.user_id
+      JOIN Animals an ON a.animal_id = an.animal_id
+      ORDER BY a.application_date DESC
+    `);
+    res.json(adoptions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.put('/api/admin/adoptions/:id/status', validateAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { status, home_check_passed, fee_paid, contract_signed } = req.body;
+  try {
+    let updateFields = 'status=?';
+    let params = [status];
+    if (typeof home_check_passed !== 'undefined') {
+      updateFields += ', home_check_passed=?';
+      params.push(!!home_check_passed);
+    }
+    if (typeof fee_paid !== 'undefined') {
+      updateFields += ', fee_paid=?';
+      params.push(!!fee_paid);
+    }
+    if (typeof contract_signed !== 'undefined') {
+      updateFields += ', contract_signed=?';
+      params.push(!!contract_signed);
+    }
+    if (status === 'approved') {
+      updateFields += ', approval_date=?';
+      params.push(new Date());
+    }
+    params.push(id);
+    await pool.query(`UPDATE Adoptions SET ${updateFields} WHERE adoption_id=?`, params);
+    res.json({ message: 'Adoption request updated' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
