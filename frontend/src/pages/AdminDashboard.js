@@ -74,43 +74,60 @@ const AdminDashboard = () => {
       </header>
       
       <main className="dashboard-content">
-        <h2>Admin Dashboard</h2>
-        <p>Welcome to the StraySense administration panel.</p>
-        
-        <div className="admin-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', margin: '2.5rem 0 0 0' }}>
-          <div className="stat-card">
-            <h3>Total Users</h3>
-            <p className="stat-number">{stats.totalUsers}</p>
+        <section className="admin-welcome-card">
+          <h1 className="admin-welcome-title">Welcome, Admin! <span role="img" aria-label="wave">👋</span></h1>
+          <p className="admin-welcome-desc">Manage users, animals, shelters, reports, adoptions, and vaccinations with ease. Your dashboard gives you a quick overview and powerful controls.</p>
+        </section>
+
+        <div className="admin-stats two-rows">
+          <div className="stat-card stat-users">
+            <div className="stat-accent"></div>
+            <div className="stat-icon">👤</div>
+            <div className="stat-label">Total Users</div>
+            <div className="stat-number">{stats.totalUsers}</div>
           </div>
-          <div className="stat-card">
-            <h3>Total Animals</h3>
-            <p className="stat-number">{stats.totalAnimals}</p>
+          <div className="stat-card stat-animals">
+            <div className="stat-accent"></div>
+            <div className="stat-icon">🐾</div>
+            <div className="stat-label">Total Animals</div>
+            <div className="stat-number">{stats.totalAnimals}</div>
           </div>
-          <div className="stat-card">
-            <h3>Total Shelters</h3>
-            <p className="stat-number">{stats.totalShelters}</p>
+          <div className="stat-card stat-shelters">
+            <div className="stat-accent"></div>
+            <div className="stat-icon">🏠</div>
+            <div className="stat-label">Total Shelters</div>
+            <div className="stat-number">{stats.totalShelters}</div>
           </div>
-          <div className="stat-card">
-            <h3>Active Reports</h3>
-            <p className="stat-number">{stats.activeReports}</p>
+          <div className="stat-card stat-reports">
+            <div className="stat-accent"></div>
+            <div className="stat-icon">📢</div>
+            <div className="stat-label">Active Reports</div>
+            <div className="stat-number">{stats.activeReports}</div>
           </div>
-          <div className="stat-card">
-            <h3>Active Adoption Requests</h3>
-            <p className="stat-number">{stats.activeAdoptionRequests}</p>
+          <div className="stat-card stat-adoptions">
+            <div className="stat-accent"></div>
+            <div className="stat-icon">❤️</div>
+            <div className="stat-label">Active Adoptions</div>
+            <div className="stat-number">{stats.activeAdoptionRequests}</div>
           </div>
-          <div className="stat-card">
-            <h3>Pending Vaccinations</h3>
-            <p className="stat-number">{stats.pendingVaccinations}</p>
+          <div className="stat-card stat-vaccinations">
+            <div className="stat-accent"></div>
+            <div className="stat-icon">💉</div>
+            <div className="stat-label">Pending Vaccinations</div>
+            <div className="stat-number">{stats.pendingVaccinations}</div>
           </div>
         </div>
 
-        <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button className="action-button primary" style={{ minWidth: 180 }} onClick={() => navigate('/admin/animals')}>Manage Animals</button>
-          <button className="action-button secondary" style={{ minWidth: 180 }} onClick={() => navigate('/admin/shelters')}>Manage Shelters</button>
-          <button className="action-button report-btn" style={{ minWidth: 180, background: '#ff914d', color: '#fff', border: 'none' }} onClick={() => navigate('/admin/reports')}>Manage Reports</button>
-          <button className="action-button adoption-btn" style={{ minWidth: 180, background: '#4e9cff', color: '#fff', border: 'none' }} onClick={() => navigate('/admin/adoptions')}>Manage Adoption Requests</button>
-          <button className="action-button vaccination-btn" style={{ minWidth: 180, background: '#43c59e', color: '#fff', border: 'none' }} onClick={() => navigate('/admin/vaccinations')}>Manage Vaccinations</button>
-        </div>
+        <section className="dashboard-actions">
+          <h3>Quick Actions</h3>
+          <div className="action-buttons">
+            <button className="action-button primary" onClick={() => navigate('/admin/animals')}>🐾 Manage Animals</button>
+            <button className="action-button secondary" onClick={() => navigate('/admin/shelters')}>🏠 Manage Shelters</button>
+            <button className="action-button report-btn" style={{ background: '#ff914d', color: '#fff' }} onClick={() => navigate('/admin/reports')}>📢 Manage Reports</button>
+            <button className="action-button adoption-btn" style={{ background: '#4e9cff', color: '#fff' }} onClick={() => navigate('/admin/adoptions')}>❤️ Manage Adoptions</button>
+            <button className="action-button vaccination-btn" style={{ background: '#43c59e', color: '#fff' }} onClick={() => navigate('/admin/vaccinations')}>💉 Manage Vaccinations</button>
+          </div>
+        </section>
       </main>
     </div>
   );

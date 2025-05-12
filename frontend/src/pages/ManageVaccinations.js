@@ -321,7 +321,7 @@ const ManageVaccinations = () => {
                       <h3 style={{ marginBottom: 8 }}>{vaccine.name}</h3>
                       <div style={{ fontSize: '0.98rem', color: '#555' }}>{vaccine.description}</div>
                     </div>
-                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1.2rem', justifyContent: 'flex-end' }}>
+                    <div className="card-actions">
                       <button className="action-button secondary" onClick={() => handleEditVaccine(vaccine)}>Edit</button>
                       <button className="action-button" onClick={() => handleDeleteVaccine(vaccine.vaccine_id)}>Delete</button>
                     </div>
@@ -349,7 +349,7 @@ const ManageVaccinations = () => {
                       <h3 style={{ marginBottom: 8 }}>{animal.name || 'Unnamed Animal'}</h3>
                       <div style={{ fontSize: '0.98rem', color: '#555' }}>Species: {animal.species}, Age: {animal.age || '-'}<br />Status: {animal.status}</div>
                     </div>
-                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1.2rem', justifyContent: 'flex-end' }}>
+                    <div className="card-actions">
                       <button className="action-button primary" onClick={() => openScheduleModal(animal)}>Schedule Vaccine</button>
                     </div>
                   </div>
@@ -382,7 +382,7 @@ const ManageVaccinations = () => {
                       </div>
                     </div>
                     {!vac.completed_date && (
-                      <div style={{ display: 'flex', gap: '1rem', marginTop: '1.2rem', justifyContent: 'flex-end' }}>
+                      <div className="card-actions">
                         <button className="action-button primary" onClick={() => handleMarkDone(vac.vaccination_id)}>Mark as Done</button>
                       </div>
                     )}

@@ -142,7 +142,7 @@ const ManageAdoptions = () => {
                   )}
                 </div>
                 {selectedStatus === 'pending' && (
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '1.2rem', justifyContent: 'flex-end' }}>
+                  <div className="card-actions">
                     <button className="action-button primary" onClick={() => handleAccept(adoption)}>Accept</button>
                     <button className="action-button" onClick={() => handleReject(adoption.adoption_id)}>Reject</button>
                   </div>

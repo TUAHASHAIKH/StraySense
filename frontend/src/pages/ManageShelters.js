@@ -184,7 +184,7 @@ const ManageShelters = () => {
                   <span><b>Email:</b> {shelter.email || '-'}</span>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.2rem', justifyContent: 'flex-end' }}>
+              <div className="card-actions">
                 <button className="action-button secondary" onClick={() => handleOpenModal(shelter)}>Edit</button>
                 <button className="action-button" onClick={() => handleDelete(shelter.shelter_id)}>Remove</button>
               </div>

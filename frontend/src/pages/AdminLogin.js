@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/auth.css';
+import logoImg from '../assets/logo.jpg';
 
 const AdminLogin = () => {
   const [password, setPassword] = useState('');
@@ -41,7 +42,7 @@ const AdminLogin = () => {
   return (
     <div className="auth-outer-container">
       <div className="auth-left-panel">
-        <img src="/logo192.png" alt="StraySense Logo" className="auth-brand-logo" />
+        <img src={logoImg} alt="StraySense Logo" className="auth-brand-logo" />
         <div className="auth-tagline">
           <h2>Admin Panel<br/>StraySense</h2>
         </div>

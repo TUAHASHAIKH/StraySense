@@ -299,7 +299,7 @@ const ManageAnimals = () => {
                   <span><b>Neutered:</b> {animal.neutered ? 'Yes' : 'No'}</span>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.2rem', justifyContent: 'flex-end' }}>
+              <div className="card-actions">
                 <button className="action-button secondary" onClick={() => handleEditAnimal(animal)}>Edit</button>
                 <button className="action-button" onClick={() => handleRemoveAnimal(animal.animal_id)}>Remove</button>
               </div>
