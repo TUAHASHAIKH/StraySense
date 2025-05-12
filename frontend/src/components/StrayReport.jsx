@@ -6,13 +6,18 @@ import './StrayReport.css';
 
 const StrayReport = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user'));
+  // Get user info from localStorage - handle both possible formats
+  const userInfo = JSON.parse(localStorage.getItem('user')) || JSON.parse(localStorage.getItem('userInfo'));
   const [formData, setFormData] = useState({
     animal_type: '',
+    animal_size: '',
     description: '',
+    visible_injuries: '',
+    province: '',
+    city: '',
     location: null,
-    condition: '',
-    image: null
+    latitude: '',
+    longitude: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -25,20 +30,12 @@ const StrayReport = () => {
     }));
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData(prev => ({
-        ...prev,
-        image: file
-      }));
-    }
-  };
-
   const handleLocationSelect = (location) => {
     setFormData(prev => ({
       ...prev,
-      location: location
+      location: location,
+      latitude: location.lat,
+      longitude: location.lng
     }));
   };
 
@@ -47,35 +44,44 @@ const StrayReport = () => {
     setError('');
     setSuccess('');
 
+    const userId = userInfo?.id || userInfo?.user_id || userInfo?.userId;
+    console.log('User info from localStorage:', userInfo);
+    console.log('Extracted userId:', userId);
+    
+    if (!userId) {
+      setError('Please log in to submit a report');
+      return;
+    }
+
     if (!formData.location) {
       setError('Please select a location on the map');
       return;
     }
 
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('user_id', user.id);
-      formDataToSend.append('animal_type', formData.animal_type);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('latitude', formData.location.lat);
-      formDataToSend.append('longitude', formData.location.lng);
-      formDataToSend.append('condition', formData.condition);
-      if (formData.image) {
-        formDataToSend.append('image', formData.image);
-      }
+      const data = {
+        user_id: parseInt(userId),
+        animal_type: formData.animal_type,
+        animal_size: formData.animal_size,
+        description: formData.description,
+        visible_injuries: formData.visible_injuries || '',
+        province: formData.province,
+        city: formData.city,
+        latitude: parseFloat(formData.latitude),
+        longitude: parseFloat(formData.longitude)
+      };
 
-      const response = await axios.post('http://localhost:3001/api/stray-reports', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      console.log('Sending data to server:', data);
 
-      setSuccess('Stray animal report submitted successfully!');
-      setTimeout(() => {
-        navigate('/landing');
-      }, 2000);
+      const response = await axios.post('http://localhost:3001/api/stray-reports', data);
+      console.log('Server response:', response.data);
+      setSuccess('Report submitted successfully!');
+      setTimeout(() => navigate('/landing'), 2000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Error submitting report');
+      console.error('Full error:', err);
+      console.error('Error response:', err.response?.data);
+      console.error('Error status:', err.response?.status);
+      setError(err.response?.data?.error || err.response?.data?.details || 'Error submitting report');
     }
   };
 
@@ -96,26 +102,27 @@ const StrayReport = () => {
             required
           >
             <option value="">Select animal type</option>
-            <option value="dog">Dog</option>
-            <option value="cat">Cat</option>
-            <option value="other">Other</option>
+            <option value="Dog">Dog</option>
+            <option value="Cat">Cat</option>
+            <option value="Cow">Cow</option>
+            <option value="Donkey">Donkey</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
         <div className="form-group">
-          <label htmlFor="condition">Condition:</label>
+          <label htmlFor="animal_size">Animal Size:</label>
           <select
-            id="condition"
-            name="condition"
-            value={formData.condition}
+            id="animal_size"
+            name="animal_size"
+            value={formData.animal_size}
             onChange={handleInputChange}
             required
           >
-            <option value="">Select condition</option>
-            <option value="healthy">Healthy</option>
-            <option value="injured">Injured</option>
-            <option value="sick">Sick</option>
-            <option value="unknown">Unknown</option>
+            <option value="">Select size</option>
+            <option value="Small">Small</option>
+            <option value="Medium">Medium</option>
+            <option value="Large">Large</option>
           </select>
         </div>
 
@@ -132,6 +139,43 @@ const StrayReport = () => {
         </div>
 
         <div className="form-group">
+          <label htmlFor="visible_injuries">Visible Injuries:</label>
+          <textarea
+            id="visible_injuries"
+            name="visible_injuries"
+            value={formData.visible_injuries}
+            onChange={handleInputChange}
+            placeholder="Describe any visible injuries or health concerns"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="province">Province:</label>
+          <input
+            type="text"
+            id="province"
+            name="province"
+            value={formData.province}
+            onChange={handleInputChange}
+            required
+            placeholder="Enter province"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="city">City:</label>
+          <input
+            type="text"
+            id="city"
+            name="city"
+            value={formData.city}
+            onChange={handleInputChange}
+            required
+            placeholder="Enter city"
+          />
+        </div>
+
+        <div className="form-group">
           <label>Location:</label>
           <MapPicker onLocationSelect={handleLocationSelect} />
           {formData.location && (
@@ -140,17 +184,6 @@ const StrayReport = () => {
               Longitude: {formData.location.lng.toFixed(6)}
             </div>
           )}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="image">Upload Image:</label>
-          <input
-            type="file"
-            id="image"
-            name="image"
-            onChange={handleImageChange}
-            accept="image/*"
-          />
         </div>
 
         <button type="submit" className="submit-btn">Submit Report</button>
