@@ -1,0 +1,9 @@
+# ignore all node_modules in any subfolder
+**/node_modules/
+
+# ignore lock-files if you prefer regenerating them
+**/package-lock.json
+**/yarn.lock
+
+# env files
+**/*.env

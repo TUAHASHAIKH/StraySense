@@ -1,0 +1,151 @@
+.my-adoptions {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.my-adoptions h1 {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.user-selector {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.user-selector label {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.user-selector select {
+  padding: 0.8rem 1.5rem;
+  border: 2px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  color: var(--text-color);
+  background: white;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.user-selector select:focus {
+  outline: none;
+  border-color: var(--primary-dark);
+}
+
+.adoptions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.adoption-card {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.adoption-card:hover {
+  transform: translateY(-5px);
+}
+
+.adoption-info h3 {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.adoption-info p {
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.adoption-info .species {
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.adoption-info .breed {
+  color: var(--text-color);
+  font-style: italic;
+}
+
+.adoption-info .status {
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.status-pending {
+  color: #f39c12;
+}
+
+.status-approved {
+  color: #27ae60;
+}
+
+.status-rejected {
+  color: #e74c3c;
+}
+
+.status-completed {
+  color: #3498db;
+}
+
+.adoption-info .date {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: var(--error-color);
+  font-size: 1.2rem;
+}
+
+.no-adoptions {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-color);
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .my-adoptions {
+    padding: 1rem;
+  }
+
+  .adoptions-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .user-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .user-selector select {
+    width: 100%;
+  }
+} 
