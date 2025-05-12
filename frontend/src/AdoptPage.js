@@ -5,7 +5,7 @@
 // - name
 // - type (enum: 'Dog', 'Cat', 'Other')
 // - age
-// - image_url
+// - image_path
 // - description
 // - status (available, adopted, pending)
 // - created_at
@@ -18,6 +18,12 @@ import './AdoptPage.css';
 import logo from './assets/logo.jpg';
 import authService from './services/authService';
 import UserNavbar from './components/UserNavbar';
+
+// Helper to convert DB image_path to public URL
+const getImageUrl = (image_path) => {
+  if (!image_path) return '/animal.jpg'; // fallback image
+  return image_path.replace(/^frontend[\\/]+public/, '') || '/animal.jpg';
+};
 
 const AdoptPage = () => {
   const navigate = useNavigate();
@@ -154,7 +160,7 @@ const AdoptPage = () => {
           {filteredPets.map(pet => (
             <div className="pet-card" key={pet.animal_id}>
               <div className="pet-image-container">
-                <img src={pet.image_url || 'default-pet.jpg'} alt={pet.name} className="pet-image" />
+                <img src={getImageUrl(pet.image_path)} alt={pet.name} className="pet-image" />
               </div>
               <div className="pet-info">
                 <h3 className="pet-name">{pet.name}</h3>
