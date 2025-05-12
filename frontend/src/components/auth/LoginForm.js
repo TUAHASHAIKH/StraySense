@@ -52,7 +52,7 @@ const LoginForm = () => {
       <div className="auth-left-panel">
         <img src={logoImg} alt="StraySense Logo" className="auth-brand-logo" />
         <div className="auth-tagline">
-          <h2>Capturing Moments,<br/>Creating Memories</h2>
+          <h2>Giving Stray Animals<br/>a Second Chance at Life</h2>
         </div>
       </div>
       <div className="auth-right-panel">

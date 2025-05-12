@@ -6,6 +6,8 @@ import AdoptPage from './AdoptPage';
 import MyAdoptions from './MyAdoptions';
 import ProtectedRoute from './common/ProtectedRoute';
 import LandingPage from './LandingPage';
+import StrayReport from './components/StrayReport';
+import VaccinationSchedules from './components/VaccinationSchedules';
 import './App.css';
 
 function App() {
@@ -31,6 +33,22 @@ function App() {
           element={
             <ProtectedRoute>
               <MyAdoptions />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/report" 
+          element={
+            <ProtectedRoute>
+              <StrayReport />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/vaccination-schedules" 
+          element={
+            <ProtectedRoute>
+              <VaccinationSchedules />
             </ProtectedRoute>
           } 
         />

@@ -14,204 +14,132 @@
 
 .adopt-page {
   min-height: 100vh;
-  width: 100%;
   background: var(--light-bg);
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
+  padding: 2rem;
 }
 
 .adopt-header {
-  background: white;
-  box-shadow: var(--box-shadow);
-  padding: 1rem 2rem;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  width: 100%;
+  text-align: center;
+  margin-bottom: 3rem;
 }
 
-.header-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
-}
-
-.logo-title {
-  display: flex;
-  align-items: center;
-}
-
-.logo {
-  width: 40px;
-  height: 40px;
-  margin-right: 0.8rem;
-  filter: drop-shadow(0 2px 4px rgba(255, 146, 72, 0.3));
-}
-
-.title {
-  font-size: 2rem;
-  font-weight: bold;
-  color: var(--primary-color);
-  letter-spacing: 1px;
-  text-shadow: 0 2px 8px rgba(255, 146, 72, 0.2);
-}
-
-.nav-links {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-}
-
-.nav-link {
-  color: var(--text-color);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-  position: relative;
-}
-
-.nav-link:hover {
-  color: var(--primary-color);
-}
-
-.nav-link.active {
-  color: var(--primary-color);
-}
-
-.nav-link.active::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--primary-color);
-  border-radius: 2px;
-}
-
-.adopt-content {
-  flex: 1;
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.filters {
-  background: white;
-  padding: 2rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  margin-bottom: 2rem;
-  width: 100%;
-}
-
-.filters h3 {
-  color: var(--primary-color);
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
+.adopt-title {
+  font-size: 2.5rem;
+  color: var(--dark-blue);
+  margin-bottom: 1rem;
   font-weight: 700;
+}
+
+.adopt-subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.adopt-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .filter-group {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.filter-button {
-  padding: 0.8rem 1.5rem;
-  background: var(--light-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  color: var(--text-color);
-  cursor: pointer;
-  transition: all 0.2s;
+.filter-group label {
   font-weight: 500;
+  color: var(--dark-blue);
 }
 
-.filter-button:hover,
-.filter-button.active {
-  background: var(--primary-color);
-  color: white;
+.filter-group select {
+  padding: 0.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: #f8f9fa;
+  color: var(--dark-blue);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-group select:focus {
+  outline: none;
   border-color: var(--primary-color);
-  transform: translateY(-2px);
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
 }
 
-.adopt-grid {
+.animals-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
-  width: 100%;
 }
 
-.pet-card {
-  background: white;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
+.animal-card {
+  background: #fff;
+  border-radius: 20px;
   overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
-  display: flex;
-  flex-direction: column;
-}
-
-.pet-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
-.pet-image-container {
-  width: 100%;
-  height: 240px;
-  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
   position: relative;
 }
 
-.pet-image {
+.animal-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.animal-image {
   width: 100%;
-  height: 100%;
+  height: 250px;
   object-fit: cover;
-  transition: transform 0.3s;
 }
 
-.pet-card:hover .pet-image {
-  transform: scale(1.05);
-}
-
-.pet-info {
+.animal-info {
   padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
 }
 
-.pet-name {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary-color);
+.animal-name {
+  font-size: 1.4rem;
+  color: var(--dark-blue);
   margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 
-.pet-details {
-  color: var(--text-color);
-  margin-bottom: 1rem;
-  font-size: 0.95rem;
+.animal-details {
   display: flex;
-  gap: 0.5rem;
-  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
-.pet-description {
-  color: var(--text-color);
+.animal-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
   font-size: 0.95rem;
-  margin-bottom: 1.5rem;
+}
+
+.animal-detail i {
+  color: var(--primary-color);
+}
+
+.animal-description {
+  color: #666;
+  font-size: 0.95rem;
   line-height: 1.6;
-  flex: 1;
+  margin-bottom: 1.5rem;
 }
 
 .adopt-button {
@@ -220,116 +148,84 @@
   background: var(--primary-color);
   color: white;
   border: none;
-  border-radius: var(--border-radius);
+  border-radius: 12px;
+  font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
-  font-size: 1rem;
-  text-align: center;
+  transition: all 0.3s ease;
 }
 
 .adopt-button:hover {
   background: var(--primary-dark);
   transform: translateY(-2px);
-}
-
-.session-selector {
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  justify-content: center;
-  background: white;
-  padding: 1.5rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-}
-
-.session-selector label {
-  font-size: 1.1rem;
-  color: var(--text-color);
-  font-weight: 500;
-}
-
-.session-selector select {
-  padding: 0.8rem 1.5rem;
-  border: 2px solid var(--primary-color);
-  border-radius: var(--border-radius);
-  font-size: 1rem;
-  color: var(--text-color);
-  background: white;
-  cursor: pointer;
-  min-width: 300px;
-}
-
-.session-selector select:focus {
-  outline: none;
-  border-color: var(--primary-dark);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
 }
 
 .adopt-button:disabled {
   background: #ccc;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
-.session-warning {
-  background: #fff3cd;
-  color: #856404;
-  padding: 1rem;
-  border-radius: var(--border-radius);
-  margin-bottom: 2rem;
+.no-animals {
   text-align: center;
-  font-weight: 500;
-  box-shadow: var(--box-shadow);
+  padding: 3rem;
+  color: #666;
+  font-size: 1.2rem;
 }
 
-.logout-button {
-  padding: 0.8rem 1.5rem;
-  background: #ff9248;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 1rem;
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--primary-color);
+  font-size: 1.2rem;
 }
 
-.logout-button:hover {
-  background: #e87d2d;
-  transform: translateY(-2px);
+.error {
+  text-align: center;
+  padding: 3rem;
+  color: var(--error-color);
+  font-size: 1.2rem;
 }
 
 @media (max-width: 768px) {
-  .adopt-header {
+  .adopt-page {
     padding: 1rem;
   }
-  
-  .header-content {
-    padding: 0 1rem;
+
+  .adopt-title {
+    font-size: 2rem;
   }
-  
-  .adopt-content {
-    padding: 1rem;
+
+  .adopt-subtitle {
+    font-size: 1.1rem;
   }
-  
-  .adopt-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
+  .animals-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
   }
-  
-  .filter-group {
-    flex-direction: row;
-    justify-content: center;
-  }
-  
-  .filter-button {
-    flex: 1;
-    text-align: center;
-  }
-  
-  .pet-image-container {
+
+  .animal-image {
     height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .adopt-title {
+    font-size: 1.8rem;
+  }
+
+  .adopt-subtitle {
+    font-size: 1rem;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .animals-grid {
+    grid-template-columns: 1fr;
   }
 } 

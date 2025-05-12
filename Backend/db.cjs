@@ -566,4 +566,33 @@ router.get('/user/adoptions', validateSession, async (req, res) => {
   }
 });
 
+// Get vaccinations for specific animals
+router.get('/vaccinations/animals', async (req, res) => {
+  try {
+    const { animal_ids } = req.query;
+    
+    if (!animal_ids) {
+      return res.status(400).json({ error: 'Animal IDs are required' });
+    }
+
+    const connection = await pool.getConnection();
+    
+    // Get vaccinations for the specified animals with vaccine type names
+    const [vaccinations] = await connection.execute(
+      `SELECT v.*, vt.name as vaccine_type 
+       FROM Vaccinations v 
+       JOIN Vaccine_Types vt ON v.vaccine_type_id = vt.vaccine_type_id 
+       WHERE v.animal_id IN (?) 
+       ORDER BY v.scheduled_date ASC`,
+      [animal_ids.split(',')]
+    );
+
+    connection.release();
+    res.json(vaccinations);
+  } catch (error) {
+    console.error('Error fetching vaccinations:', error);
+    res.status(500).json({ error: 'Failed to fetch vaccinations' });
+  }
+});
+
 module.exports = router; 

@@ -73,12 +73,19 @@ const LandingPage = () => {
       <section className="hero-section" id="hero">
         <div className="hero-content">
           <h1>Welcome{user ? `, ${user.first_name}` : ''}!</h1>
-          <p>Capturing Moments, Creating Memories.<br />Find your new best friend today.</p>
+          <p>Giving Stray Animals a Second Chance at Life.<br />Find your forever friend today.</p>
           <div className="hero-img-container">
             <img src={catdogImg} alt="Cat and Dog" className="hero-img" />
             <div className="hero-buttons">
-              <button className="main-btn adopt-btn" onClick={() => navigate('/adopt')}>Adopt</button>
-              <button className="main-btn report-btn" onClick={() => navigate('/report')}>Report a Stray</button>
+              <button className="main-btn adopt-btn" onClick={() => navigate('/adopt')}>
+                <i className="fas fa-paw"></i> Adopt a Pet
+              </button>
+              <button className="main-btn report-btn" onClick={() => navigate('/report')}>
+                <i className="fas fa-exclamation-circle"></i> Report a Stray
+              </button>
+              <button className="main-btn vaccine-btn" onClick={() => navigate('/vaccination-schedules')}>
+                <i className="fas fa-syringe"></i> Vaccination Schedules
+              </button>
             </div>
           </div>
         </div>

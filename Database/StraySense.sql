@@ -100,22 +100,41 @@ CREATE TABLE IF NOT EXISTS Adoptions (
 
 -- Vaccine_Types: catalog of valid vaccines
 CREATE TABLE IF NOT EXISTS Vaccine_Types (
-    vaccine_id INT AUTO_INCREMENT PRIMARY KEY,
+    vaccine_type_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Vaccinations: scheduled and completed records
 CREATE TABLE IF NOT EXISTS Vaccinations (
     vaccination_id INT AUTO_INCREMENT PRIMARY KEY,
     animal_id INT NOT NULL,
-    vaccine_id INT NOT NULL,
+    vaccine_type_id INT NOT NULL,
     scheduled_date DATE NOT NULL,
     completed_date DATE,
+    status ENUM('pending', 'completed', 'cancelled') DEFAULT 'pending',
+    notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (animal_id) REFERENCES Animals(animal_id) ON DELETE CASCADE,
-    FOREIGN KEY (vaccine_id) REFERENCES Vaccine_Types(vaccine_id) ON DELETE RESTRICT
+    FOREIGN KEY (vaccine_type_id) REFERENCES Vaccine_Types(vaccine_type_id) ON DELETE RESTRICT
 );
+
+-- Insert some common vaccine types
+INSERT INTO Vaccine_Types (name, description) VALUES
+('Rabies', 'Annual rabies vaccination'),
+('DHPP', 'Distemper, Hepatitis, Parainfluenza, and Parvovirus'),
+('FVRCP', 'Feline Viral Rhinotracheitis, Calicivirus, and Panleukopenia'),
+('Bordetella', 'Kennel cough vaccine'),
+('Feline Leukemia', 'Feline leukemia virus vaccine');
+
+-- Insert some test vaccination data
+INSERT INTO Vaccinations (animal_id, vaccine_type_id, scheduled_date, status, notes) VALUES
+(1, 1, DATE_ADD(CURRENT_DATE, INTERVAL 7 DAY), 'pending', 'Annual rabies vaccination due'),
+(1, 2, DATE_ADD(CURRENT_DATE, INTERVAL 14 DAY), 'pending', 'DHPP booster shot'),
+(2, 3, DATE_ADD(CURRENT_DATE, INTERVAL 10 DAY), 'pending', 'FVRCP annual vaccination'),
+(2, 5, DATE_ADD(CURRENT_DATE, INTERVAL 21 DAY), 'pending', 'Feline leukemia booster');
 
 -- 5. Stray Reporting & Processing
 
