@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/global.css';
+import logoImg from '../assets/logo.jpg';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -65,9 +66,9 @@ const AdminDashboard = () => {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <div className="logo-container">
-          <img src="/logo.png" alt="StraySense Logo" className="auth-brand-logo" style={{ width: 40, height: 40, marginRight: 10 }} />
-          <h1>StraySense Admin</h1>
+        <div className="logo-container" style={{ display: 'flex', alignItems: 'flex-end', gap: '0.9rem' }}>
+          <img src={logoImg} alt="StraySense Logo" className="auth-brand-logo" style={{ width: 56, height: 56, borderRadius: 12, objectFit: 'cover', boxShadow: '0 4px 16px #ffb77c33, 0 2px 8px rgba(0,0,0,0.08)', marginBottom: '-8px' }} />
+          <span className="title" style={{ fontSize: '1.7rem', fontWeight: 700, color: '#FF7F00', letterSpacing: '1px', lineHeight: 1.1, display: 'inline-block' }}>StraySense Admin</span>
         </div>
         <button onClick={handleLogout} className="logout-btn">Logout</button>
       </header>

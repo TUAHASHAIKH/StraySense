@@ -4,6 +4,7 @@ import axios from 'axios';
 import './MyAdoptions.css';
 import logo from './assets/logo.jpg';
 import authService from './services/authService';
+import UserNavbar from './components/UserNavbar';
 
 const MyAdoptions = () => {
   const navigate = useNavigate();
@@ -37,21 +38,9 @@ const MyAdoptions = () => {
 
   return (
     <div className="my-adoptions">
-      <header className="adopt-header">
-        <div className="header-content">
-          <div className="logo-title">
-            <img src={logo} alt="StraySense Logo" className="logo" />
-            <span className="title">StraySense</span>
-          </div>
-          <nav className="nav-links">
-            <a href="/adopt" className="nav-link">Adopt</a>
-            <a href="/my-adoptions" className="nav-link active">My Adoptions</a>
-            <button onClick={handleLogout} className="logout-button">Logout</button>
-          </nav>
-        </div>
-      </header>
+      <UserNavbar />
 
-      <main className="adopt-content">
+      <main className="adopt-content" style={{ marginTop: '3rem' }}>
         <h1>My Adoptions</h1>
         
         {loading && <div className="loading">Loading adoptions...</div>}

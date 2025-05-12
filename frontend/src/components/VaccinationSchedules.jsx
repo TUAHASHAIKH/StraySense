@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './VaccinationSchedules.css';
 import authService from '../services/authService';
+import UserNavbar from './UserNavbar';
 
 const VaccinationSchedules = () => {
   const [schedules, setSchedules] = useState([]);
@@ -57,19 +58,25 @@ const VaccinationSchedules = () => {
 
   if (loading) {
     return (
-      <div className="vaccination-schedules-container">
-        <h2>Vaccination Schedules</h2>
-        <div className="loading">Loading vaccination schedules...</div>
-      </div>
+      <>
+        <UserNavbar />
+        <div className="vaccination-schedules-container">
+          <h2>Vaccination Schedules</h2>
+          <div className="loading">Loading vaccination schedules...</div>
+        </div>
+      </>
     );
   }
 
   if (error) {
     return (
-      <div className="vaccination-schedules-container">
-        <h2>Vaccination Schedules</h2>
-        <div className="error-message">{error}</div>
-      </div>
+      <>
+        <UserNavbar />
+        <div className="vaccination-schedules-container">
+          <h2>Vaccination Schedules</h2>
+          <div className="error-message">{error}</div>
+        </div>
+      </>
     );
   }
 
@@ -84,54 +91,58 @@ const VaccinationSchedules = () => {
   }, {});
 
   return (
-    <div className="vaccination-schedules-container">
-      <h2>Vaccination Schedules</h2>
-      {Object.entries(schedulesByAnimal).length === 0 ? (
-        <div className="no-schedules">
-          <p>No vaccinations scheduled for your adopted animals.</p>
-        </div>
-      ) : (
-        Object.entries(schedulesByAnimal).map(([animalId, animalSchedules]) => {
-          const animal = adoptedAnimals.find(a => a.animal_id === parseInt(animalId));
-          return (
-            <div key={animalId} className="animal-schedules">
-              <h3 className="animal-name">{animal?.animal_name || 'Unnamed Animal'}</h3>
-              <div className="schedules-list">
-                {animalSchedules.map((schedule) => (
-                  <div key={schedule.vaccination_id} className="schedule-card">
-                    <div className="schedule-header">
-                      <span className={`status ${schedule.status?.toLowerCase() || 'pending'}`}>
-                        {schedule.status || 'Pending'}
-                      </span>
-                    </div>
-                    <div className="schedule-details">
-                      <div className="detail-item">
-                        <label>Vaccine Type:</label>
-                        <span>{schedule.vaccine_type || 'Not specified'}</span>
+    <>
+      <UserNavbar />
+      <div style={{height: '3.5rem'}}></div>
+      <div className="vaccination-schedules-container" style={{ marginTop: '3rem' }}>
+        <h2>Vaccination Schedules</h2>
+        {Object.entries(schedulesByAnimal).length === 0 ? (
+          <div className="no-schedules">
+            <p>No vaccinations scheduled for your adopted animals.</p>
+          </div>
+        ) : (
+          Object.entries(schedulesByAnimal).map(([animalId, animalSchedules]) => {
+            const animal = adoptedAnimals.find(a => a.animal_id === parseInt(animalId));
+            return (
+              <div key={animalId} className="animal-schedules">
+                <h3 className="animal-name">{animal?.animal_name || 'Unnamed Animal'}</h3>
+                <div className="schedules-list">
+                  {animalSchedules.map((schedule) => (
+                    <div key={schedule.vaccination_id} className="schedule-card">
+                      <div className="schedule-header">
+                        <span className={`status ${schedule.status?.toLowerCase() || 'pending'}`}>
+                          {schedule.status || 'Pending'}
+                        </span>
                       </div>
-                      <div className="detail-item">
-                        <label>Scheduled Date:</label>
-                        <span>{formatDate(schedule.scheduled_date)}</span>
-                      </div>
-                      {schedule.completed_date && (
+                      <div className="schedule-details">
                         <div className="detail-item">
-                          <label>Completed Date:</label>
-                          <span>{formatDate(schedule.completed_date)}</span>
+                          <label>Vaccine Type:</label>
+                          <span>{schedule.vaccine_type || 'Not specified'}</span>
                         </div>
-                      )}
-                      <div className="detail-item">
-                        <label>Notes:</label>
-                        <span>{schedule.notes || 'No additional notes'}</span>
+                        <div className="detail-item">
+                          <label>Scheduled Date:</label>
+                          <span>{formatDate(schedule.scheduled_date)}</span>
+                        </div>
+                        {schedule.completed_date && (
+                          <div className="detail-item">
+                            <label>Completed Date:</label>
+                            <span>{formatDate(schedule.completed_date)}</span>
+                          </div>
+                        )}
+                        <div className="detail-item">
+                          <label>Notes:</label>
+                          <span>{schedule.notes || 'No additional notes'}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          );
-        })
-      )}
-    </div>
+            );
+          })
+        )}
+      </div>
+    </>
   );
 };
 

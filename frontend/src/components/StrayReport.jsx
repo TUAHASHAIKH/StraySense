@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import MapPicker from './MapPicker';
 import axios from 'axios';
 import './StrayReport.css';
+import UserNavbar from './UserNavbar';
 
 const StrayReport = () => {
   const navigate = useNavigate();
@@ -99,116 +100,120 @@ const StrayReport = () => {
   };
 
   return (
-    <div className="stray-report-container">
-      <h2>Report a Stray Animal</h2>
-      {error && <div className="error-message">{error}</div>}
-      {success && <div className="success-message">{success}</div>}
-      
-      <form onSubmit={handleSubmit} className="stray-report-form">
-        <div className="form-group">
-          <label htmlFor="animal_type">Animal Type:</label>
-          <select
-            id="animal_type"
-            name="animal_type"
-            value={formData.animal_type}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select animal type</option>
-            <option value="Dog">Dog</option>
-            <option value="Cat">Cat</option>
-            <option value="Cow">Cow</option>
-            <option value="Donkey">Donkey</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
+    <>
+      <UserNavbar />
+      <div style={{height: '3.5rem'}}></div>
+      <div className="stray-report-container" style={{ marginTop: '3rem' }}>
+        <h2>Report a Stray Animal</h2>
+        {error && <div className="error-message">{error}</div>}
+        {success && <div className="success-message">{success}</div>}
+        
+        <form onSubmit={handleSubmit} className="stray-report-form">
+          <div className="form-group">
+            <label htmlFor="animal_type">Animal Type:</label>
+            <select
+              id="animal_type"
+              name="animal_type"
+              value={formData.animal_type}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Select animal type</option>
+              <option value="Dog">Dog</option>
+              <option value="Cat">Cat</option>
+              <option value="Cow">Cow</option>
+              <option value="Donkey">Donkey</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="animal_size">Animal Size:</label>
-          <select
-            id="animal_size"
-            name="animal_size"
-            value={formData.animal_size}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select size</option>
-            <option value="Small">Small</option>
-            <option value="Medium">Medium</option>
-            <option value="Large">Large</option>
-          </select>
-        </div>
+          <div className="form-group">
+            <label htmlFor="animal_size">Animal Size:</label>
+            <select
+              id="animal_size"
+              name="animal_size"
+              value={formData.animal_size}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Select size</option>
+              <option value="Small">Small</option>
+              <option value="Medium">Medium</option>
+              <option value="Large">Large</option>
+            </select>
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="description">Description:</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            required
-            placeholder="Describe the animal's appearance, behavior, and any other relevant details"
-          />
-        </div>
+          <div className="form-group">
+            <label htmlFor="description">Description:</label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              required
+              placeholder="Describe the animal's appearance, behavior, and any other relevant details"
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="visible_injuries">Visible Injuries:</label>
-          <textarea
-            id="visible_injuries"
-            name="visible_injuries"
-            value={formData.visible_injuries}
-            onChange={handleInputChange}
-            placeholder="Describe any visible injuries or health concerns"
-          />
-        </div>
+          <div className="form-group">
+            <label htmlFor="visible_injuries">Visible Injuries:</label>
+            <textarea
+              id="visible_injuries"
+              name="visible_injuries"
+              value={formData.visible_injuries}
+              onChange={handleInputChange}
+              placeholder="Describe any visible injuries or health concerns"
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="province">Province:</label>
-          <select
-            id="province"
-            name="province"
-            value={formData.province}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select province</option>
-            {Object.keys(locationData).map(province => (
-              <option key={province} value={province}>{province}</option>
-            ))}
-          </select>
-        </div>
+          <div className="form-group">
+            <label htmlFor="province">Province:</label>
+            <select
+              id="province"
+              name="province"
+              value={formData.province}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Select province</option>
+              {Object.keys(locationData).map(province => (
+                <option key={province} value={province}>{province}</option>
+              ))}
+            </select>
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="city">City:</label>
-          <select
-            id="city"
-            name="city"
-            value={formData.city}
-            onChange={handleInputChange}
-            required
-            disabled={!formData.province}
-          >
-            <option value="">Select city</option>
-            {formData.province && locationData[formData.province].map(city => (
-              <option key={city} value={city}>{city}</option>
-            ))}
-          </select>
-        </div>
+          <div className="form-group">
+            <label htmlFor="city">City:</label>
+            <select
+              id="city"
+              name="city"
+              value={formData.city}
+              onChange={handleInputChange}
+              required
+              disabled={!formData.province}
+            >
+              <option value="">Select city</option>
+              {formData.province && locationData[formData.province].map(city => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
+          </div>
 
-        <div className="form-group">
-          <label>Location:</label>
-          <MapPicker onLocationSelect={handleLocationSelect} />
-          {formData.location && (
-            <div className="location-coordinates">
-              Latitude: {formData.location.lat.toFixed(6)}, 
-              Longitude: {formData.location.lng.toFixed(6)}
-            </div>
-          )}
-        </div>
+          <div className="form-group">
+            <label>Location:</label>
+            <MapPicker onLocationSelect={handleLocationSelect} />
+            {formData.location && (
+              <div className="location-coordinates">
+                Latitude: {formData.location.lat.toFixed(6)}, 
+                Longitude: {formData.location.lng.toFixed(6)}
+              </div>
+            )}
+          </div>
 
-        <button type="submit" className="submit-btn">Submit Report</button>
-      </form>
-    </div>
+          <button type="submit" className="submit-btn">Submit Report</button>
+        </form>
+      </div>
+    </>
   );
 };
 

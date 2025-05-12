@@ -17,6 +17,7 @@ import axios from 'axios';
 import './AdoptPage.css';
 import logo from './assets/logo.jpg';
 import authService from './services/authService';
+import UserNavbar from './components/UserNavbar';
 
 const AdoptPage = () => {
   const navigate = useNavigate();
@@ -117,22 +118,9 @@ const AdoptPage = () => {
 
   return (
     <div className="adopt-page">
-      <header className="adopt-header">
-        <div className="header-content">
-          <div className="logo-title">
-            <img src={logo} alt="StraySense Logo" className="logo" />
-            <span className="title">StraySense</span>
-          </div>
-          <nav className="nav-links">
-            <a href="/adopt" className="nav-link active">Adopt</a>
-            <a href="/my-adoptions" className="nav-link">My Adoptions</a>
-            <button onClick={handleLogout} className="logout-button">Logout</button>
-          </nav>
-        </div>
-      </header>
-
+      <UserNavbar />
       <main className="adopt-content">
-        <div className="filters" id="filters">
+        <div className="filters" id="filters" style={{ marginTop: '2rem' }}>
           <h3>Find Your Perfect Companion</h3>
           <div className="filter-group">
             <button 

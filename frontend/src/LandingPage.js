@@ -51,6 +51,12 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
+
   return (
     <div className="fullpage-bg">
       {/* Navbar */}
@@ -65,6 +71,7 @@ const LandingPage = () => {
             <a href="#features" className="nav-link">What We Do</a>
             <a href="#testimonials" className="nav-link">Testimonials</a>
             <a href="#reviews" className="nav-link">Reviews</a>
+            <button className="logout-btn" onClick={handleLogout}>Logout</button>
           </nav>
         </div>
       </header>
@@ -72,8 +79,7 @@ const LandingPage = () => {
       {/* Hero Section */}
       <section className="hero-section" id="hero">
         <div className="hero-content">
-          <br />
-          <br />
+          
           <h1>Welcome{user ? `, ${user.first_name}` : ''}!</h1>
           <p>Giving Stray Animals a Second Chance at Life.<br />Find your forever friend today.</p>
           <div className="hero-img-container">
@@ -81,6 +87,9 @@ const LandingPage = () => {
             <div className="hero-buttons">
               <button className="main-btn adopt-btn" onClick={() => navigate('/adopt')}>
                 <i className="fas fa-paw"></i> Adopt a Pet
+              </button>
+              <button className="main-btn myadopt-btn" onClick={() => navigate('/my-adoptions')}>
+                <i className="fas fa-heart"></i> My Adoptions
               </button>
               <button className="main-btn report-btn" onClick={() => navigate('/report')}>
                 <i className="fas fa-exclamation-circle"></i> Report a Stray

@@ -511,7 +511,7 @@ p {
 
 .hero-buttons {
   display: flex;
-  gap: 1.5rem;
+  gap: 2.5rem;
   justify-content: center;
   margin-top: 2rem;
 }
@@ -554,6 +554,22 @@ p {
   background: #5b4bc4;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+}
+
+.myadopt-btn {
+  background: linear-gradient(90deg, #ff6b6b 0%, #6c5ce7 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.15);
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+.myadopt-btn:hover {
+  background: linear-gradient(90deg, #6c5ce7 0%, #ff6b6b 100%);
+  box-shadow: 0 8px 24px rgba(108, 92, 231, 0.25);
+  transform: translateY(-2px) scale(1.04);
 }
 
 @media (max-width: 768px) {
