@@ -23,7 +23,7 @@ const upload = multer({ dest: 'uploads/' });
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: 'your_password', // Replace with your actual MySQL password
+  password: 'seecs@123', // Replace with your actual MySQL password
   database: 'straysense'
 });
 

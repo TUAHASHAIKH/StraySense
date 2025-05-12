@@ -58,7 +58,7 @@ app.use((req, res, next) => {
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: '0305',
+  password: 'seecs@123',
   database: 'straysense'
 });
 

@@ -23,7 +23,7 @@ const JWT_SECRET = 'straysense_secret_key'; // Use env var in production
 const dbConfig = {
   host: 'localhost',
   user: 'root',
-  password: '0305',
+  password: 'seecs@123',
   database: 'straysense'
 };
 
@@ -552,6 +552,7 @@ router.get('/user/profile', validateSession, async (req, res) => {
 // Get user's adoptions
 router.get('/user/adoptions', validateSession, async (req, res) => {
   try {
+    console.log('Fetching adoptions for user:', req.user.user_id);
     const [adoptions] = await pool.query(
       `SELECT a.*, an.name as animal_name, an.species, an.breed 
        FROM Adoptions a 
@@ -559,9 +560,10 @@ router.get('/user/adoptions', validateSession, async (req, res) => {
        WHERE a.user_id = ?`,
       [req.user.user_id]
     );
+    console.log('Found adoptions:', adoptions);
     res.json(adoptions);
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching adoptions:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -570,25 +572,17 @@ router.get('/user/adoptions', validateSession, async (req, res) => {
 router.get('/vaccinations/animals', async (req, res) => {
   try {
     const { animal_ids } = req.query;
+    console.log('Fetching vaccinations for animal_ids:', animal_ids);
     
-    if (!animal_ids) {
-      return res.status(400).json({ error: 'Animal IDs are required' });
-    }
+    // Parse animal_ids into an array of integers
+    const animalIdArray = animal_ids.split(',').map(id => parseInt(id.trim()));
+    console.log('Parsed animal IDs:', animalIdArray);
 
-    const connection = await pool.getConnection();
-    
-    // Get vaccinations for the specified animals with vaccine type names
-    const [vaccinations] = await connection.execute(
-      `SELECT v.*, vt.name as vaccine_type 
-       FROM Vaccinations v 
-       JOIN Vaccine_Types vt ON v.vaccine_type_id = vt.vaccine_type_id 
-       WHERE v.animal_id IN (?) 
-       ORDER BY v.scheduled_date ASC`,
-      [animal_ids.split(',')]
-    );
+    // Since we're only getting one animal's vaccinations at a time, use the first ID
+    const [vaccinations] = await pool.query('CALL GetVaccinationSchedule(?)', [animalIdArray[0]]);
+    console.log('Found vaccinations:', vaccinations[0]);
 
-    connection.release();
-    res.json(vaccinations);
+    res.json(vaccinations[0]);
   } catch (error) {
     console.error('Error fetching vaccinations:', error);
     res.status(500).json({ error: 'Failed to fetch vaccinations' });

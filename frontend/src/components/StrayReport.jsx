@@ -8,6 +8,17 @@ const StrayReport = () => {
   const navigate = useNavigate();
   // Get user info from localStorage - handle both possible formats
   const userInfo = JSON.parse(localStorage.getItem('user')) || JSON.parse(localStorage.getItem('userInfo'));
+  
+  // Define provinces and their cities
+  const locationData = {
+    'Balochistan': ['Gwadar', 'Quetta'],
+    'Punjab': ['Islamabad', 'Lahore', 'Rawalpindi'],
+    'Sindh': ['Karachi', 'Hyderabad', 'Sukkur'],
+    'Khyber Pakhtunkhwa': ['Peshawar', 'Abbottabad', 'Swat'],
+    'Gilgit-Baltistan': ['Gilgit', 'Skardu'],
+    'Azad Kashmir': ['Muzaffarabad', 'Mirpur']
+  };
+
   const [formData, setFormData] = useState({
     animal_type: '',
     animal_size: '',
@@ -26,7 +37,9 @@ const StrayReport = () => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
+      // Reset city when province changes
+      ...(name === 'province' && { city: '' })
     }));
   };
 
@@ -151,28 +164,35 @@ const StrayReport = () => {
 
         <div className="form-group">
           <label htmlFor="province">Province:</label>
-          <input
-            type="text"
+          <select
             id="province"
             name="province"
             value={formData.province}
             onChange={handleInputChange}
             required
-            placeholder="Enter province"
-          />
+          >
+            <option value="">Select province</option>
+            {Object.keys(locationData).map(province => (
+              <option key={province} value={province}>{province}</option>
+            ))}
+          </select>
         </div>
 
         <div className="form-group">
           <label htmlFor="city">City:</label>
-          <input
-            type="text"
+          <select
             id="city"
             name="city"
             value={formData.city}
             onChange={handleInputChange}
             required
-            placeholder="Enter city"
-          />
+            disabled={!formData.province}
+          >
+            <option value="">Select city</option>
+            {formData.province && locationData[formData.province].map(city => (
+              <option key={city} value={city}>{city}</option>
+            ))}
+          </select>
         </div>
 
         <div className="form-group">

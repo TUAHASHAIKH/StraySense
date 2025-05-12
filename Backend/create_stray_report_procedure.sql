@@ -5,8 +5,8 @@ DROP PROCEDURE IF EXISTS SubmitStrayReport //
 CREATE PROCEDURE SubmitStrayReport(
     IN p_user_id INT,
     IN p_description TEXT,
-    IN p_animal_type VARCHAR(50),
-    IN p_animal_size VARCHAR(50),
+    IN p_animal_type ENUM('Dog','Cat','Cow','Donkey','Other'),
+    IN p_animal_size ENUM('Small','Medium','Large'),
     IN p_visible_injuries TEXT,
     IN p_province VARCHAR(100),
     IN p_city VARCHAR(100),
@@ -22,7 +22,7 @@ BEGIN
 
     START TRANSACTION;
     
-    INSERT INTO stray_reports (
+    INSERT INTO Stray_Reports (
         user_id,
         description,
         animal_type,
