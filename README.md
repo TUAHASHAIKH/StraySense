@@ -59,7 +59,7 @@ git checkout tuaha-new
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/your-username/StraySense.git
+   git clone https://github.com/TUAHASHAIKH/StraySense.git
    cd StraySense
    git checkout tuaha-new
    ```
