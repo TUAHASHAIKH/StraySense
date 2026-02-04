@@ -177,3 +177,13 @@ Ensure your code follows the existing style and includes relevant tests.
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Pictures
+<img width="2255" height="1272" alt="Screenshot 2025-05-15 105813" src="https://github.com/user-attachments/assets/31b037c7-b84e-4010-9e0a-ed8695362e67" />
+<img width="2255" height="1272" alt="Screenshot 2025-05-15 105813" src="https://github.com/user-attachments/assets/31b037c7-b84e-4010-9e0a-ed8695362e67" />
+<img width="2249" height="1345" alt="Screenshot 2025-05-15 105923" src="https://github.com/user-attachments/assets/d1d4fc03-92cd-4cb1-a6a2-e9e9a5f846cf" />
+<img width="2249" height="1345" alt="Screenshot 2025-05-15 105923" src="https://github.com/user-attachments/assets/d1d4fc03-92cd-4cb1-a6a2-e9e9a5f846cf" />
+<img width="2255" height="1336" alt="Screenshot 2025-05-15 110015" src="https://github.com/user-attachments/assets/5f9cb3d2-c01d-4778-8605-1908e2d37cc3" />
+<img width="2255" height="1336" alt="Screenshot 2025-05-15 110015" src="https://github.com/user-attachments/assets/5f9cb3d2-c01d-4778-8605-1908e2d37cc3" />
+
+
